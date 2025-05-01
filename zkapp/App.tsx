@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 
 import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { getGNSSCoordinates } from './gnss';
-import { generateZKProof } from './wasmRunner';
+import { getGNSSCoordinates } from './gnss.ts';
+import { generateZKProof } from './wasmRunner.ts';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -36,13 +36,13 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <View style={backgroundStyle}>
+    <View style={styles.background}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
 
-      <Button title="Obtener coordenadas y generar prueba ZK" onPress={handlePress} />
+      <Button title="Get cords and generate ZK proof" onPress={handlePress} />
 
       {coords && (
         <Text style={styles.info}>
@@ -58,3 +58,20 @@ function App(): React.JSX.Element {
     </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  info: {
+    marginTop: 20,
+    fontSize: 16,
+  },
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.lighter, 
+    padding: 20,
+  },
+});
+
+export default App;
