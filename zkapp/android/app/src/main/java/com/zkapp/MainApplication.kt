@@ -1,6 +1,9 @@
 package com.zkapp
 
+//  Import native module and package 
+import com.zkapp.GNSSPackage 
 import com.zkapp.GNSSModule
+
 import android.app.Application
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -21,7 +24,7 @@ class MainApplication : Application(), ReactApplication {
             PackageList(this).packages.apply {
               // Packages that cannot be autolinked yet can be added manually here, for example:
               // add(MyReactNativePackage())
-              add(GNSSModule())
+              add(GNSSPackage())
             }
 
         override fun getJSMainModuleName(): String = "index"
