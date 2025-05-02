@@ -21,7 +21,7 @@ function App(): React.JSX.Element {
   useEffect(() => {
     (async () => {
       const location = await getGNSSCoordinates();
-      console.log("Ubicación GNSS:", location);
+      console.log("Ubication GNSS:", location);
     })();
   }, []);
 
@@ -59,7 +59,7 @@ function App(): React.JSX.Element {
 
       {proofGenerated && (
         <Text style={[styles.info, { color: 'green' }]}>
-          ✅ Prueba ZK generada con éxito
+          ZK Proof generated succesfully
         </Text>
       )}
     </View>
