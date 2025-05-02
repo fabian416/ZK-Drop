@@ -7,7 +7,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-
+import { PermissionsAndroid, Platform } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { getGNSSCoordinates } from './gnss.ts';
 import { generateZKProof } from './wasmRunner.ts';
@@ -20,10 +20,30 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     (async () => {
+      const granted = await requestPermissions();
+      if (!granted) {
+        console.warn("Location permission dennied");
+        return;
+      }
       const location = await getGNSSCoordinates();
-      console.log("Ubication GNSS:", location);
+      console.log("Ubicación GNSS:", location);
     })();
   }, []);
+
+  const requestPermissions = async () => {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+      ]);
+  
+      return (
+        granted['android.permission.ACCESS_FINE_LOCATION'] === 'granted' &&
+        granted['android.permission.ACCESS_COARSE_LOCATION'] === 'granted'
+      );
+    }
+    return true;
+  };
 
   const backgroundStyle = {
     flex: 1,
