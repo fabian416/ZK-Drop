@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   StatusBar,
@@ -17,6 +17,13 @@ function App(): React.JSX.Element {
 
   const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
   const [proofGenerated, setProofGenerated] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const location = await getGNSSCoordinates();
+      console.log("Ubicación GNSS:", location);
+    })();
+  }, []);
 
   const backgroundStyle = {
     flex: 1,
