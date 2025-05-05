@@ -117,6 +117,8 @@ dependencies {
     implementation("com.facebook.react:react-android")
     implementation("com.github.madztheo:noir_android:1.0.0-beta.3-4") // add noir 
     implementation("com.google.code.gson:gson:2.8.9")
+    debugImplementation("com.facebook.flipper:flipper:0.182.0")
+    debugImplementation("com.facebook.soloader:soloader:0.10.5")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
