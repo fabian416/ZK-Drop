@@ -49,7 +49,7 @@ class MainApplication : Application(), ReactApplication {
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       load()
     }
-    if (BuildConfig.DEBUG) { // Añade Flipper solo en modo debug
+    if (BuildConfig.DEBUG) { // add Flipper onlky in debug mode
       ReactNativeFlipper.initializeFlipper(this, reactNativeHost.reactInstanceManager)
     }
   }
