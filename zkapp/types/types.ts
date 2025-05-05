@@ -1,0 +1,1 @@
+export type Circuit = { [key: string]: any };
