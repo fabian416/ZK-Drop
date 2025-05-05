@@ -1,3 +1,3 @@
-fn main(a: Field, b: Field, result: pub Field) {
-    assert(a * b == result);
+fn main(x: Field, y: pub Field) {
+    assert(x != y);
 }
