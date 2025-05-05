@@ -10,7 +10,6 @@ import {
 import { PermissionsAndroid, Platform } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { getGNSSCoordinates } from './gnss.ts';
-import { generateZKProof } from './wasmRunner.ts';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -57,8 +56,6 @@ function App(): React.JSX.Element {
     const gnss = await getGNSSCoordinates();
     if (gnss) {
       setCoords(gnss);
-      const proof = await generateZKProof(gnss.latitude, gnss.longitude);
-      setProofGenerated(!!proof);
     }
   };
 
