@@ -1,0 +1,6 @@
+[package]
+name = "location"
+type = "bin"
+authors = [""]
+
+[dependencies]

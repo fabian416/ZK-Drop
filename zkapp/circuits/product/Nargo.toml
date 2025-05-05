@@ -1,0 +1,6 @@
+[package]
+name = "product"
+type = "bin"
+authors = [""]
+
+[dependencies]
