@@ -2,18 +2,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Alert, StyleSheet, TextInput, Button } from 'react-native';
 import { PermissionsAndroid, Platform } from 'react-native';
-import { clearCircuit, extractProof, generateProof, setupCircuit, verifyProof } from '../zkapp/lib/noir';
+import { clearCircuit, extractProof, generateProof, setupCircuit, verifyProof, prepareSrs } from '../zkapp/lib/noir';
 import locationCircuit from '../zkapp/circuits/location/target/location.json';
 import { Circuit } from './types/types';
 import { getGNSSCoordinates } from './gnss';
-import { poseidon } from '@noir-lang/noir.js';
+import { poseidonHash4, poseidonHash2 } from './utils/utils.ts';
 
-// Bounding box para Argentina (escalado por 10^6)
-const argentinaBoundingBox = {
-  min_lat: -55000000, // -55.0 * 10^6
-  max_lat: -21000000, // -21.0 * 10^6
-  min_lon: -75000000, // -75.0 * 10^6
-  max_lon: -53000000, // -53.0 * 10^6
+// Bounding box for EE. UU. continentales (escalado por 10^6)
+const usaBoundingBox = {
+  min_lat: 24500000,  // 24.5 * 10^6
+  max_lat: 49000000,  // 49.0 * 10^6
+  min_lon: -125000000, // -125.0 * 10^6
+  max_lon: -66900000,  // -66.9 * 10^6
 };
 
 export default function LocationProof() {
@@ -95,10 +95,10 @@ export default function LocationProof() {
       const start = Date.now();
 
       // Calcular valores públicos
-      const { min_lat, max_lat, min_lon, max_lon } = argentinaBoundingBox;
-      const region_hash = await poseidon([min_lat, max_lat, min_lon, max_lon]);
+      const { min_lat, max_lat, min_lon, max_lon } = usaBoundingBox;
+      const region_hash = await poseidonHash4([min_lat, max_lat, min_lon, max_lon]);
       const challenge = Math.floor(Math.random() * 1_000_000_000); // Valor único
-      const session_hash = await poseidon([region_hash, challenge]);
+      const session_hash = await poseidonHash2([region_hash, challenge]);
 
       const inputs = {
         lat,
@@ -131,7 +131,7 @@ export default function LocationProof() {
     setVerifyingProof(true);
     try {
       const verified = await verifyProof(proofAndInputs, vkey, circuitId!);
-      Alert.alert('Verification result', verified ? 'The proof is valid! User is in Argentina' : 'The proof is invalid! User is not in Argentina');
+      Alert.alert('Verification result', verified ? 'The proof is valid! User is in USA' : 'The proof is invalid! User is not in USA');
     } catch (err: any) {
       Alert.alert('Something went wrong', JSON.stringify(err));
       console.error(err);
@@ -141,7 +141,7 @@ export default function LocationProof() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Verify location in Argentina (lat, lon)</Text>
+      <Text style={styles.sectionTitle}>Verify location in USA (lat, lon)</Text>
       <View style={styles.inputRow}>
         <TextInput
           style={styles.input}
@@ -160,7 +160,7 @@ export default function LocationProof() {
         />
       </View>
       <Button title="Get GNSS Coordinates" onPress={handleGetGNSSCoords} />
-      <Text style={styles.outcome}>Condition: Inside Argentina bounding box</Text>
+      <Text style={styles.outcome}>Condition: Inside USA bounding box</Text>
       {proof && (
         <>
           <Text style={styles.sectionTitle}>Proof</Text>
