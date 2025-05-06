@@ -1,5 +1,10 @@
 package com.zkapp
 
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.NativeModule
+import com.facebook.react.uimanager.ViewManager
+import com.facebook.react.ReactPackage
+
 import com.zkapp.GNSSPackage
 import com.zkapp.NoirModule
 import android.app.Application
@@ -7,13 +12,11 @@ import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeHost
-import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
-import com.facebook.react.flipper.ReactNativeFlipper // Añade esta importación
 
 class MainApplication : Application(), ReactApplication {
 
@@ -48,9 +51,6 @@ class MainApplication : Application(), ReactApplication {
     SoLoader.init(this, OpenSourceMergedSoMapping)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       load()
-    }
-    if (BuildConfig.DEBUG) { // add Flipper onlky in debug mode
-      ReactNativeFlipper.initializeFlipper(this, reactNativeHost.reactInstanceManager)
     }
   }
 }
