@@ -1,10 +1,5 @@
 package com.zkapp
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.NativeModule
-import com.facebook.react.uimanager.ViewManager
-import com.facebook.react.ReactPackage
-
 import com.zkapp.GNSSPackage
 import com.zkapp.NoirModule
 import android.app.Application
@@ -12,10 +7,11 @@ import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactHost
 import com.facebook.react.ReactNativeHost
+import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
-import com.facebook.react.soloader.OpenSourceMergedSoMapping
+import com.facebook.react.flipper.ReactNativeFlipper
 import com.facebook.soloader.SoLoader
 
 class MainApplication : Application(), ReactApplication {
@@ -24,15 +20,9 @@ class MainApplication : Application(), ReactApplication {
       object : DefaultReactNativeHost(this) {
         override fun getPackages(): List<ReactPackage> =
             PackageList(this).packages.apply {
-                add(GNSSPackage())
-                add(object : ReactPackage {
-                    override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-                        return listOf(NoirModule(reactContext))
-                    }
-                    override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
-                        return emptyList()
-                    }
-                })
+              // Packages that cannot be autolinked yet can be added manually here, for example:
+              add(AppPackage())
+              add(GNSSPackage())
             }
 
         override fun getJSMainModuleName(): String = "index"
@@ -48,8 +38,9 @@ class MainApplication : Application(), ReactApplication {
 
   override fun onCreate() {
     super.onCreate()
-    SoLoader.init(this, OpenSourceMergedSoMapping)
+    SoLoader.init(this, false)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+      // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
   }

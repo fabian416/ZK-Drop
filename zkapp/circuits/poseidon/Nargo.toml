@@ -1,5 +1,5 @@
 [package]
-name = "location"
+name = "poseidon"
 type = "bin"
 authors = [""]
 

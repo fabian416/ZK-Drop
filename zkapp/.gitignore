@@ -82,10 +82,12 @@ yarn-error.log
 
 **/*srs.dat
 **/*srs.local
-
 /scripts/**/target/**
+scripts/**/Cargo.lock
+
 
 /android/app/src/main/jniLibs
 /android/app/libs
+.lock
 
 .env

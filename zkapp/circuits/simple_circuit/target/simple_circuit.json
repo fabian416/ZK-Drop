@@ -1,0 +1,22 @@
+{
+  "noir_version": "1.0.0-beta.3+ceaa1986628197bd1170147f6a07f0f98d21030a",
+  "hash": 8107422384038693398,
+  "abi": {
+    "parameters": [
+      {"name": "a", "type": {"kind": "field"}, "visibility": "private"},
+      {"name": "b", "type": {"kind": "field"}, "visibility": "public"}
+    ],
+    "return_type": {"abi_type": {"kind": "field"}, "visibility": "public"},
+    "error_types": {}
+  },
+  "bytecode": "H4sIAAAAAAAA/9VZ21LCMBDdXkCgVkTrs/IHTS/QvvErMpbP9ls0kB3WEJixPWFgZ3RDGw57OeyBENDBst+/pVnHxod0aoHxG+PzYaaAWLkj3KHYiheyFpGsU2AusP+2rulNH1ZQkccilvmqqrp10alSfeZFu23qvKq3q0Y1qm7qr6Ipy66pmnW7bdd5q6qyU7u6LXYGKxqOVRqsPMbluMcK6EhAaTYph8YdOeLuiynjHfkMWIOHZ4jVF38EJOkYmK+vGo7p/ITriz8m7IRD5x2bvM9x57/GuMh+PwBrKIezxtWqd03FC+j+FG9i/JQLwgXUN2zF05s+rKDQiieLOFTxJoQj6pTuU/Em5EfxZj4D1uBoxZsBSZrQbSuermFCeMVL6LYVb2ryRisest+P5EfxNO61FQ85FB3hDsZujJe1SI1/4oJwAVM6TmW+pje9W0GhFU8WsS+51gYrJRxRnwireNquQUrkd1NHuF5IOTf+mQvCBJzTKSn1Jt+kjAlHyjnhSPlM1yGlrSA3dGCCmLoFLxypw7BlXRfGv+h/kswLOiW43rS0gorvpCE941L8nWUBzPHFE1HQbw5kzq/AvjJXEbl2u4NphZ4TfmCnQCzkwM4Iq8bgTwuF5kvmoR+hJ07fUj/4VxDZF7mWZxxSDHj95/CJjmcKrAUbUI8ZP/GDvz/EtG0m1ol1j/OPHc8LzjwOLX9p76VzpdRxjzFfjZfxch5Ty78JXGAtFeNnfvCdvXoT68zKU9Z7A4qB8XjmjOjUQuse77XfMwE+PmXHEjlei405k4lrXM8fsN8b2IMeAAA=",
+  "debug_symbols": "lZUxCoQwEEXvMrWFSdSsXmVZJGqUQIgSdWER775RFERsfvln3pvmF7NQo6u5K41r+5GK90K2r9VkehfSQvE+GgfltjROyk9UZCIi7RoqJFsjao3VYcbWT0QMwzmGCwxPMDzF8AzDJYa/MDx/wl/5gefyXlMM8gzkOcgLkE9APgX5DOQlyD/Wy3h8CEyIu5GjBo9hg8EGhw0BGwlspLCRwYaEDbhzDncu4M4F2HkIlTfWmq68/okw/ipvVGX1EdvZ1Zft9BvOzekPvq91M3u9Xdp34fwf",
+  "file_map": {
+    "61": {
+      "source": "fn main(a: Field, b: pub Field) -> pub Field {\n    let a_i32 = a as i32;\n    let b_i32 = b as i32;\n\n    let result = if a_i32 > b_i32 { 1 } else { 0 };\n    result as Field\n}\n",
+      "path": "/Users/fabiandiaz/personal-repos/zk-location/zkapp/circuits/simple_circuit/src/main.nr"
+    }
+  },
+  "names": ["main"],
+  "brillig_names": ["directive_integer_quotient", "directive_invert"]
+}

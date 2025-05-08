@@ -1,7 +1,7 @@
 export type ParameterKind = 'string' | 'array' | 'struct' | 'field' | 'integer';
 
 export type ParameterType = {
-  kind: ParameterKind | string;
+  kind: ParameterKind;
   length?: number;
   type?: ParameterType;
   fields?: Parameter[];
@@ -14,14 +14,16 @@ export type Parameter = {
 };
 
 export type Circuit = {
-  noir_version: string; // String to accept versions including beta (ej. "1.0.0-beta.3+ceaa1986")
-  hash: number; // Compatible with product.json
+  noir_version: `${number}.${number}.${number}+${string}`;
+  hash: number;
   abi: {
     parameters: Parameter[];
-    param_witnesses?: { [key: string]: { start: number; end: number }[] }; // Optional
-    return_type: null | any; // Compatible with null in product.json
-    return_witnesses?: any[]; // Optional
-    error_types?: any; // Optional
+    param_witnesses?: {
+      [key: string]: {start: number; end: number}[];
+    };
+    return_type: any;
+    return_witnesses?: any[];
+    error_types?: any;
   };
   bytecode: string;
   debug_symbols: string;

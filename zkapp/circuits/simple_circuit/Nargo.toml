@@ -1,5 +1,5 @@
 [package]
-name = "product"
+name = "simple_circuit"
 type = "bin"
 authors = [""]
 

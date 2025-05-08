@@ -1,6 +1,12 @@
 import {NativeModules, Platform} from 'react-native';
-import {Circuit, Parameter, ParameterType} from '../types/types';
+import {Circuit, Parameter, ParameterType} from '../types';
 const {NoirModule} = NativeModules;
+
+type PrepareSrsResult = {
+  success: boolean
+  srsSource: string
+  srsPath: string
+}
 
 /**
  * Load the SRS from the resources into the internal storage
@@ -10,10 +16,11 @@ const {NoirModule} = NativeModules;
  * otherwise it does nothing and the SRS will be downloaded on the fly
  * from Aztec's server
  */
-export async function prepareSrs() {
-  // Only needed for Android
+export async function prepareSrs(): Promise<PrepareSrsResult> {
   if (Platform.OS === 'android') {
-    await NoirModule.prepareSrs();
+    return await NoirModule.prepareSrs();
+  } else {
+    return { success: true, srsSource: 'not-android', srsPath: 'N/A' };
   }
 }
 
