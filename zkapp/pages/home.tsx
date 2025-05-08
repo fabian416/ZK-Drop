@@ -26,6 +26,7 @@ export default function Home() {
 
   const handleSimpleProof = () => navigation.navigate('SimpleProof');
   const handlePoseidonProof = () => navigation.navigate('PoseidonProof');
+  const hanldeBoundingProof = () => navigation.navigate('BoundingProof');
 
   return (
     <MainLayout>
@@ -52,6 +53,11 @@ export default function Home() {
         <Button onPress={handlePoseidonProof}>
           <Text style={{ color: 'white', fontWeight: '700' }}>
             Run Poseidon Proof
+          </Text>
+        </Button>
+        <Button onPress={hanldeBoundingProof}>
+          <Text style={{ color: 'white', fontWeight: '700' }}>
+            Run Bounding Proof
           </Text>
         </Button>
       </View>
