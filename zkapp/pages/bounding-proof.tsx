@@ -12,6 +12,9 @@ import {
 import circuit from '../circuits/bounding/target/bounding.json';
 import { formatProof } from '../lib';
 import { Circuit } from '../types';
+import { getGNSSCoordinates } from '../gnss'; 
+import { PermissionsAndroid } from 'react-native';
+
 
 export default function BoundingProof() {
   const [proof, setProof] = useState('');
@@ -21,6 +24,38 @@ export default function BoundingProof() {
   const [generatingProof, setGeneratingProof] = useState(false);
   const [verifyingProof, setVerifyingProof] = useState(false);
   const [provingTime, setProvingTime] = useState(0);
+
+  useEffect(() => {
+    const setup = async () => {
+      // Step 1: Request location permission (Android only)
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Location Permission',
+          message: 'This app requires access to your location to generate a zero-knowledge proof.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+  
+      if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+        Alert.alert('Permission denied', 'Cannot continue without location access.');
+        return;
+      }
+  
+      // Step 2: Set up the circuit and store its ID
+      const id = await setupCircuit(circuit as Circuit);
+      setCircuitId(id);
+    };
+  
+    setup();
+  
+    // Cleanup: clear the circuit instance when unmounting the component
+    return () => {
+      if (circuitId) clearCircuit(circuitId);
+    };
+  }, []);
 
   useEffect(() => {
     const setup = async () => {
@@ -36,13 +71,21 @@ export default function BoundingProof() {
   const onGenerateProof = async () => {
 
     const FIELD_MODULUS = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
-  
+
+    // Get GNSS coordinates
+    const coords = await getGNSSCoordinates();
+    if (!coords) {
+      Alert.alert('Error', 'Cannot get GNSS coordinates');
+      return;
+    }
+
     // Private coords
-    const lat = BigInt(35000000);
-    const lon = BigInt(-90000000);
+    const lat = BigInt(Math.round(coords.latitude * 1e6));  // Convert into integer
+    const lon = BigInt(Math.round(coords.longitude * 1e6));
+    console.log("GNSS coordinates:", { lat, lon });
   
     // Adjust negative values
-    const adjustedLon = (lon + FIELD_MODULUS) % FIELD_MODULUS;
+    const adjustedLon = (lon < 0n) ? (lon + FIELD_MODULUS) % FIELD_MODULUS : lon;
     const latHex = `0x${lat.toString(16)}`;
     const lonHex = `0x${adjustedLon.toString(16)}`;
 
