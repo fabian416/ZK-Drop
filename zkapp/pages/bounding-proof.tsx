@@ -150,7 +150,7 @@ export default function BoundingProof() {
 
   return (
     <MainLayout canGoBack={true}>
-      <Text style={styles.sectionTitle}>Bounding Box Location Proof</Text>
+      <Text style={styles.sectionTitle}>Location Proof</Text>
 
       <Button disabled={generatingProof || !circuitId} onPress={onGenerateProof}>
         <Text style={{ color: 'white', fontWeight: '700' }}>

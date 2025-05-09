@@ -72,7 +72,7 @@ export default function MainLayout({
               color: '#151628',
               marginBottom: 30,
             }}>
-            Noir React Native Starter
+            zkLocation
           </Text>
           {children}
         </View>
