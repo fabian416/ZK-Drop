@@ -57,7 +57,7 @@ export default function Home() {
         </Button>
         <Button onPress={hanldeBoundingProof}>
           <Text style={{ color: 'white', fontWeight: '700' }}>
-            Run Bounding Proof
+            Run Location Proof
           </Text>
         </Button>
       </View>
