@@ -1,4 +1,3 @@
-// src/components/LandingPage.tsx
 "use client"
 
 import { Button } from "@/components/ui/button"
@@ -9,9 +8,9 @@ export default function LandingPage({ onConnect }: { onConnect: () => void }) {
   return (
     <div className="container flex flex-col items-center justify-center gap-8 px-4 py-16 text-center">
       <div className="space-y-4">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl text-violet-600">ZK Discount</h1>
+        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl text-violet-600">ZK Drop</h1>
         <p className="mx-auto max-w-md text-lg text-gray-600">
-        Uses proof of location with zero-knowledge proofs to enable regional discounts and swaps adjusted for local inflation rates.
+          Unlock token presales and airdrops in your region with zero-knowledge location proofs.
         </p>
       </div>
 
@@ -21,12 +20,16 @@ export default function LandingPage({ onConnect }: { onConnect: () => void }) {
       </Button>
 
       <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-      <FeatureCard title="Location-Based Discounts" description="Access regional discounts based on your GPS coordinates — without revealing your exact location."/>
-      <FeatureCard title="Privacy-Preserving Proofs" description="Prove you're in the right region using ZK proofs. Your wallet and location stay private."/>
-      <FeatureCard title="Inflation-Aware Swaps" description="Swap tokens with rates adjusted for local inflation indexes. Fair pricing for all regions."/>
+        <FeatureCard
+          title="Geolocated Airdrops"
+          description="Claim exclusive token rewards based on your verified region — without revealing your exact location." />
+        <FeatureCard
+          title="Presales by Location"
+          description="Access early token sales at local fair prices, adjusted for inflation or strategic targeting." />
+        <FeatureCard
+          title="ZK Privacy"
+          description="Your GPS coordinates remain private thanks to zero-knowledge proofs. No surveillance, just access." />
       </div>
     </div>
   )
 }
-
-

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { ThemeProvider } from "@/components/ui/theme-provider"
 import LandingPage from "@/components/LandingPage"
-import DexInterface from "@/components/DexInterface"
+import Interface from "@/components/Interface"
 
 export default function Home() {
   const [walletConnected, setWalletConnected] = useState(false)
@@ -14,7 +14,7 @@ export default function Home() {
         {!walletConnected ? (
           <LandingPage onConnect={() => setWalletConnected(true)} />
         ) : (
-          <DexInterface />
+          <Interface />
         )}
       </main>
     </ThemeProvider>
