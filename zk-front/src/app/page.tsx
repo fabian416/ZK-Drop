@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
-      <main className="flex min-h-screen flex-col items-center justify-center bg-violet-50">
+      <main className="flex min-h-screen flex-col items-center justify-center bg-[#f8f7ff]">
         {!walletConnected ? (
           <LandingPage onConnect={() => setWalletConnected(true)} />
         ) : (
