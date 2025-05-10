@@ -57,3 +57,35 @@ export const getPublicInputsForUSA = async () => {
     session_hash: sessionHashHex
   };
 };
+
+export const getPublicInputsForArgentina = async () => {
+    const minLat = BigInt(-55000000); // ejemplo: -55.000000
+    const maxLat = BigInt(-20000000); // -20.000000
+    const minLon = BigInt(-80000000); // -80.000000
+    const maxLon = BigInt(-50000000); // -50.000000
+  
+    const adjustedMinLon = (minLon + FIELD_MODULUS) % FIELD_MODULUS;
+    const adjustedMaxLon = (maxLon + FIELD_MODULUS) % FIELD_MODULUS;
+  
+    const minLatHex = bigIntToHexString(minLat);
+    const maxLatHex = bigIntToHexString(maxLat);
+    const minLonHex = bigIntToHexString(adjustedMinLon);
+    const maxLonHex = bigIntToHexString(adjustedMaxLon);
+  
+    const regionHash = await poseidonHash(minLatHex, maxLatHex, minLonHex, maxLonHex);
+    const regionHashHex = await convertHashToHex(regionHash);
+  
+    const challenge = BigInt(12345);
+    const sessionHashRaw = await poseidonHash2(BigInt(regionHashHex), challenge);
+    const sessionHashHex = await convertHashToHex(sessionHashRaw);
+  
+    return {
+      min_lat: `0x${minLatHex}`,
+      max_lat: `0x${maxLatHex}`,
+      min_lon: `0x${minLonHex}`,
+      max_lon: `0x${maxLonHex}`,
+      region_hash: regionHashHex,
+      challenge: "0x3039",
+      session_hash: sessionHashHex
+    };
+  };
