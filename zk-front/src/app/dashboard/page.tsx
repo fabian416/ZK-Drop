@@ -1,17 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { MapPin, Gift, Coins, ChevronRight, Clock, Check, X } from "lucide-react"
 import Link from "next/link"
+import { detectRegion, Region } from "@/lib/regions"
 
 export default function Dashboard() {
-  // Normalmente estos datos vendrían de una API o contrato
-  const [userRegion, setUserRegion] = useState("Argentina")
+  // This is a placeholder for the actual region detection logic
+  const [userRegion, setUserRegion] = useState<Region>("Unknown")
   const [verificationStatus, setVerificationStatus] = useState("pending") // verified, pending, failed
 
-  // Datos de ejemplo para presale y airdrop
+  // Example data for pre sale and airdrop
   const presaleData = {
     available: true,
     tokenName: "ZKD",
@@ -30,6 +31,18 @@ export default function Dashboard() {
     eligibility: "Early community members in South America",
     expiresIn: "7 days",
   }
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude
+        const lon = position.coords.longitude
+        const region = detectRegion(lat, lon)
+        setUserRegion(region)
+      },
+      () => setUserRegion("Unknown")
+    )
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-12 flex justify-center">
