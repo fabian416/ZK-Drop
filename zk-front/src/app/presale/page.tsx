@@ -11,7 +11,9 @@ import QRCode from "react-qr-code"
 
 export default function Presale() {
   const [amount, setAmount] = useState("")
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPurchasing, setIsPurchasing] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPurchased, setIsPurchased] = useState(false)
   const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)

@@ -10,7 +10,7 @@ import { detectRegion, Region } from "@/lib/regions"
 export default function Dashboard() {
   // This is a placeholder for the actual region detection logic
   const [userRegion, setUserRegion] = useState<Region>("Unknown")
-  const [verificationStatus, setVerificationStatus] = useState("pending") // verified, pending, failed
+  const [verificationStatus] = useState("pending") // verified, pending, failed
 
   // Example data for pre sale and airdrop
   const presaleData = {

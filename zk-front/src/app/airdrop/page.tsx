@@ -10,7 +10,9 @@ import QRCode from "react-qr-code"
 
 
 export default function Airdrop() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClaiming, setIsClaiming] = useState(false)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClaimed, setIsClaimed] = useState(false)
   const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
