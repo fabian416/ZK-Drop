@@ -2,7 +2,7 @@ import * as circomlib from "circomlibjs";
 
 const FIELD_MODULUS = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 
-const bigIntToHexString = (value: BigInt): string => {
+const bigIntToHexString = (value: bigint): string => {
   return value.toString(16);
 };
 
@@ -21,10 +21,10 @@ export const poseidonHash2 = async (a: bigint, b: bigint) => {
   return poseidon([a, b]);
 };
 
-export const convertHashToHex = async (hash: any) => {
-  const poseidon = await circomlib.buildPoseidon();
-  return `0x${poseidon.F.toObject(hash).toString(16)}`;
-};
+export const convertHashToHex = async (hash: unknown): Promise<string> => {
+    const poseidon = await circomlib.buildPoseidon();
+    return `0x${poseidon.F.toObject(hash).toString(16)}`;
+  }
 
 export const getPublicInputsForUSA = async () => {
   const minLat = BigInt(24396308); // 24.396308
