@@ -8,7 +8,7 @@ fn main(
     max_lon: pub Field,
     region_hash: pub Field,
     challenge: pub Field,
-    session_hash: pub Field,
+    nullifier: pub Field,
 ) {
     // Cast to unsigned integers
     let lat_i32 = lat as i32;
@@ -30,6 +30,6 @@ fn main(
     assert(computed_hash == region_hash);
 
     // Verify hash unique session
-    let computed_session_hash = poseidon::bn254::hash_2([region_hash, challenge]);
-    assert(computed_session_hash == session_hash);
+    let computed_nullifier = poseidon::bn254::hash_2([region_hash, challenge]);
+    assert(computed_nullifier == nullifier);
 }
