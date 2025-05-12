@@ -15,9 +15,7 @@ import ZKPassportModal from "@/components/ZkPassport"
 
 export default function Presale() {
   const [amount, setAmount] = useState("")
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPurchasing, setIsPurchasing] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPurchased, setIsPurchased] = useState(false)
   const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
@@ -101,10 +99,6 @@ export default function Presale() {
       alert("Transaction failed: " + error?.message);
     }
   }, [isSuccess, isError, data, error]);
-
-  const handleVerifyIdentity = async () => {
-    setShowIdentity(true)
-  }
 
   const calculateTotal = () => {
     const numAmount = Number.parseFloat(amount) || 0
@@ -237,7 +231,7 @@ export default function Presale() {
                   onClick={() => handleSubmitProof({ proof: "mock-proof-data" })}
                   className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
                 >
-                  I've generated my proof
+                  I&apos;ve generated my proof
                 </Button>
               ) : (
                 <Button

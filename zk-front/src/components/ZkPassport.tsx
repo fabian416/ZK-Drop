@@ -43,6 +43,7 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
 
     const runZkPassport = async () => {
       setLoading(true);
+      console.log("Request ID:", requestId);
       try {
         if (!zkpassportRef.current) {
           zkpassportRef.current = new ZKPassport();
@@ -122,6 +123,8 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
     };
 
     runZkPassport();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, router]);
 
     const useDemoIdentity = () => {
@@ -135,6 +138,7 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
 
     useEffect(() => {
         generateIdentityID();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [passportData])
 
     const generateIdentityID = async () => {
@@ -153,7 +157,7 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
         onClose();
       };
 
-    const poseidonHash = async (key: string, value: any) => {
+    const poseidonHash = async (key: string, value: string) => {
         if (!key || value === undefined || value === null) {
         throw new Error("poseidonHash recibió un key o value vacío");
         }
@@ -195,7 +199,7 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
         </button>
         <h1 className="text-xl font-bold mb-4">ZK-Passport Required</h1>
         <p className="text-sm text-gray-700 mb-2">
-            To prevent Sybil attacks, we verify you're a unique human using <strong>ZK Passport</strong>.
+            To prevent Sybil attacks, we verify you&apos;re a unique human using <strong>ZK Passport</strong>.
         </p>
         <p className="text-sm text-gray-600 mb-4">
             Your passport data will be <strong>hashed</strong> (never shared) to ensure no one can claim more than once — while staying fully anonymous.

@@ -3,14 +3,13 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { MapPin, Gift, Coins, ChevronRight, Clock, Check, X } from "lucide-react"
+import { MapPin, Gift, Coins, ChevronRight, Clock } from "lucide-react"
 import Link from "next/link"
 import { detectRegion, Region } from "@/lib/regions"
 
 export default function Dashboard() {
   // This is a placeholder for the actual region detection logic
   const [userRegion, setUserRegion] = useState<Region>("Unknown")
-  const [verificationStatus] = useState("pending") // verified, pending, failed
 
   // Example data for pre sale and airdrop
   const presaleData = {

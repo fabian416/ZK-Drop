@@ -12,9 +12,7 @@ import nftDropContract from "@/lib/abis/MockedAirdropContract.json"
 import { useWriteContract } from "wagmi"
 
 export default function NFTClaimPage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClaiming, setIsClaiming] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClaimed, setIsClaimed] = useState(false)
   const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
@@ -196,7 +194,7 @@ useEffect(() => {
                   onClick={() => handleSubmitProof({ proof: "mock-proof-data" })}
                   className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
                 >
-                  I've generated my proof
+                  I&apos;ve generated my proof
                 </Button>
               ) : (
                 <Button
