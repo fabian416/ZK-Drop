@@ -9,7 +9,6 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs"
 import QRCode from "react-qr-code"
 import presaleContract from "@/lib/abis/PreSaleMock.json"
-import usdcContract from "@/lib/abis/MockUSDC.json"
 import { useWriteContract } from "wagmi"
 import ZKPassportModal from "@/components/ZkPassport"
 
