@@ -227,12 +227,7 @@ export default function Presale() {
                   )}
                 </Button>
               ) : showQr ? (
-                <Button
-                  onClick={() => handleSubmitProof({ proof: "mock-proof-data" })}
-                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
-                >
-                  I&apos;ve generated my proof
-                </Button>
+               <></>
               ) : (
                 <Button
                   onClick={handleSendTransaction}
@@ -271,13 +266,19 @@ export default function Presale() {
   
               {/* QR code with public inputs */}
               {showQr && qrData && (
-                <div className="mt-6 text-center">
-                  <p className="text-sm text-gray-600 mb-2">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 mb-4">
                     Scan this QR code with your ZK mobile app to generate the proof.
                   </p>
                   <div className="inline-block p-4 bg-white rounded-lg border shadow">
                     <QRCode value={qrData} size={200} />
                   </div>
+                  <Button
+                  onClick={() => handleSubmitProof({ proof: "mock-proof-data" })}
+                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white cursor-pointer mt-2"
+                >
+                  Use demo Proof
+                </Button>
                 </div>
               )}
             </>
