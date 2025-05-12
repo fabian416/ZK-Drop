@@ -8,7 +8,7 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 import ZKPassportModal from "@/components/ZkPassport"
-import airdropContract from "@/lib/abis/MockedAirdropContract.json"
+import airdropContract from "@/lib/abis/AirdropMock.json"
 import { useWriteContract } from "wagmi"
 
 export default function Airdrop() {
@@ -58,7 +58,7 @@ export default function Airdrop() {
     try {
       await writeContract({
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-        abi: airdropContract.abi,
+        abi: airdropContract,
         functionName: "airdrop"
       });
   
