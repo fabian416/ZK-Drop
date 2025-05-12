@@ -8,7 +8,7 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 import ZKPassportModal from "@/components/ZkPassport"
-import airdropContract from "@/lib/abis/AirdropContracts.json"
+import airdropContract from "@/lib/abis/MockedAirdropContract.sol.json"
 import { useWriteContract } from "wagmi"
 
 export default function Airdrop() {
@@ -61,8 +61,7 @@ export default function Airdrop() {
       await writeContract({
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
         abi: airdropContract.abi,
-        functionName: "airdrop",
-        args: [proof], 
+        functionName: "airdrop"
       });
   
       // The response from the transaction is usually a transaction hash
@@ -267,3 +266,4 @@ useEffect(() => {
     </div>
   );
 }
+
