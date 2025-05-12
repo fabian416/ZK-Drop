@@ -21,12 +21,9 @@ export default function Presale() {
 
   // Mocked data for presale
   const presaleData = {
-    tokenName: "ZKD",
-    tokenPrice: 0.85,
-    publicPrice: 1.2,
-    discount: "29%",
+    tokenName: "ZKL",
+    tokenPrice: 0.50,
     minPurchase: 100,
-    maxPurchase: 5000,
     endsIn: "3 days 14 hours",
     region: "South America",
   }
@@ -46,11 +43,6 @@ export default function Presale() {
   const calculateTotal = () => {
     const numAmount = Number.parseFloat(amount) || 0
     return (numAmount * presaleData.tokenPrice).toFixed(2)
-  }
-
-  const calculateSavings = () => {
-    const numAmount = Number.parseFloat(amount) || 0
-    return ((presaleData.publicPrice - presaleData.tokenPrice) * numAmount).toFixed(2)
   }
 
   return (
@@ -87,10 +79,6 @@ export default function Presale() {
                     <span className="text-[#453978] font-medium">Your Price:</span>
                     <div className="flex items-center">
                       <span className="text-[#453978] font-bold text-lg">${presaleData.tokenPrice}</span>
-                      <span className="text-gray-500 text-sm line-through ml-2">${presaleData.publicPrice}</span>
-                      <span className="bg-[#c1ff72]/30 text-[#453978] font-medium ml-2 rounded-full px-2 py-1 text-xs">
-                        {presaleData.discount}
-                      </span>
                     </div>
                   </div>
                 </div>
@@ -111,7 +99,6 @@ export default function Presale() {
                   </div>
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
                     <span>Min: {presaleData.minPurchase} ZKD</span>
-                    <span>Max: {presaleData.maxPurchase} ZKD</span>
                   </div>
                 </div>
   
@@ -122,8 +109,6 @@ export default function Presale() {
                       <span className="font-bold text-[#453978]">${calculateTotal()}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">You Save:</span>
-                      <span className="font-medium text-green-600">${calculateSavings()}</span>
                     </div>
                   </div>
                 )}
