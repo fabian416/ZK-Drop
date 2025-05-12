@@ -8,7 +8,7 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 import ZKPassportModal from "@/components/ZkPassport"
-import nftDropContract from "@/lib/abis/MockedAirdropContract.json"
+import nftDropContract from "@/lib/abis/AirdropMockedNFT.json"
 import { useWriteContract } from "wagmi"
 
 export default function NFTClaimPage() {
@@ -56,8 +56,8 @@ export default function NFTClaimPage() {
     setIsClaiming(true);
     try {
       await writeContract({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-        abi: nftDropContract.abi,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS_NFT as `0x${string}`,
+        abi: nftDropContract,
         functionName: "airdrop"
       });
   
