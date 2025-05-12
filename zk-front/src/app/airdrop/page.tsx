@@ -8,6 +8,8 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 import ZKPassportModal from "@/components/ZkPassport"
+import airdropContract from "@/lib/abis/HonkVerifier.json"
+import { useWriteContract } from "wagmi"
 
 export default function Airdrop() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -18,6 +20,9 @@ export default function Airdrop() {
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
+  const [proof, setProof] = useState<any>(null)
+
+  const { writeContract, isPending } = useWriteContract()
 
   // Mocked data for airdrop
   const airdropData = {
@@ -40,12 +45,40 @@ export default function Airdrop() {
     }
   }
 
+  const handleSubmitProof = async (receivedProof: any) => {
+    setProof(receivedProof)
+    setShowQr(false)
+  }
+
+  const handleSendTransaction = async () => {
+    if (!proof) return
+    
+    setIsClaiming(true)
+    try {
+      const response = await writeContract({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`, // Replace with actual contract address
+        abi: airdropContract.abi,
+        functionName: "claimAirdrop",
+        args: [proof],
+      })
+
+      console.log("Transaction response:", response)
+      setIsClaimed(true)
+    } catch (err) {
+      console.error("Error sending transaction:", err)
+      alert("Failed to claim airdrop on-chain.")
+    } finally {
+      setIsClaiming(false)
+    }
+  }
+
   const handleVerifyIdentity = async () => {
     setShowIdentity(true)
   }
 
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-12 flex justify-center">
+      <Button onClick={handleSendTransaction}>Send Transaction</Button>
       {showIdentity && <ZKPassportModal open={showIdentity} onClose={() => setShowIdentity(false)} setIdentity={setIdentity} />}
       <div className="container max-w-lg px-4">
         <div className="text-center mb-6">
@@ -103,44 +136,85 @@ export default function Airdrop() {
                 </div>
               </div>
   
-              {/* Botón para generar QR */}
-              <Button
-                onClick={!identity ? handleVerifyIdentity : handleClaim}
-                disabled={isClaiming}
-                className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
-              >
-                {isClaiming ? (
-                  <span className="flex items-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Processing...
-                  </span>
-                ) : !identity ? (
-                  <span>Verify Identity before claiming</span>
-                ) :
-                (
-                  <span>Claim Airdrop</span>
-
-                )}
-              </Button>
+              {/* Botón para generar QR o enviar transacción */}
+              {!showQr && !proof ? (
+                <Button
+                  onClick={!identity ? handleVerifyIdentity : handleClaim}
+                  disabled={isClaiming}
+                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
+                >
+                  {isClaiming ? (
+                    <span className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : !identity ? (
+                    <span>Verify Identity before claiming</span>
+                  ) : (
+                    <span>Generate Proof</span>
+                  )}
+                </Button>
+              ) : showQr ? (
+                <Button
+                  onClick={() => handleSubmitProof({ proof: "mock-proof-data" })}
+                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
+                >
+                  I've generated my proof
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleSendTransaction}
+                  disabled={isPending}
+                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
+                >
+                  {isPending ? (
+                    <span className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Sending Transaction...
+                    </span>
+                  ) : (
+                    <span>Claim Airdrop On-Chain</span>
+                  )}
+                </Button>
+              )}
   
               {/* Bloque QR con public inputs */}
               {showQr && qrData && (
