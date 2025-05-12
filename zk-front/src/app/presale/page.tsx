@@ -30,7 +30,7 @@ export default function Presale() {
     tokenPrice: 0.50,
     minPurchase: 100,
     endsIn: "3 days 14 hours",
-    region: "South America",
+    region: "North America",
   }
 
   const handlePurchase = async () => {

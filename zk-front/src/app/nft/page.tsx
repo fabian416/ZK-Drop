@@ -28,7 +28,7 @@ export default function NFTClaimPage() {
     description: "Exclusive identity-bound NFT",
     eligibility: "Early community members",
     expiresIn: "5 days",
-    region: "South America",
+    region: "North America",
   }
 
   const handleClaim = async () => {

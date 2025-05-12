@@ -29,7 +29,7 @@ export default function Airdrop() {
     tokenValue: "$212.50",
     eligibility: "Early community members",
     expiresIn: "7 days",
-    region: "South America",
+    region: "North America",
   }
 
   const handleClaim = async () => {
