@@ -7,6 +7,7 @@ import { ArrowLeft, Gift, Info, Check } from "lucide-react"
 import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
+import ZKPassportModal from "@/components/ZkPassport"
 
 export default function Airdrop() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -15,6 +16,8 @@ export default function Airdrop() {
   const [isClaimed, setIsClaimed] = useState(false)
   const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
+  const [showIdentity, setShowIdentity] = useState(false)
+  const [identity, setIdentity] = useState(false)
 
   // Mocked data for airdrop
   const airdropData = {
@@ -37,8 +40,13 @@ export default function Airdrop() {
     }
   }
 
+  const handleVerifyIdentity = async () => {
+    setShowIdentity(true)
+  }
+
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-12 flex justify-center">
+      {showIdentity && <ZKPassportModal open={showIdentity} onClose={() => setShowIdentity(false)} setIdentity={setIdentity} />}
       <div className="container max-w-lg px-4">
         <div className="text-center mb-6">
           <Link href="/dashboard" className="inline-flex items-center text-[#453978] hover:underline">
@@ -97,7 +105,7 @@ export default function Airdrop() {
   
               {/* Botón para generar QR */}
               <Button
-                onClick={handleClaim}
+                onClick={!identity ? handleVerifyIdentity : handleClaim}
                 disabled={isClaiming}
                 className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
               >
@@ -125,8 +133,12 @@ export default function Airdrop() {
                     </svg>
                     Processing...
                   </span>
-                ) : (
+                ) : !identity ? (
+                  <span>Verify Identity before claiming</span>
+                ) :
+                (
                   <span>Claim Airdrop</span>
+
                 )}
               </Button>
   
