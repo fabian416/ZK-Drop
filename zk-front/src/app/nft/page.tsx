@@ -8,7 +8,7 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 import ZKPassportModal from "@/components/ZkPassport"
-import nftDropContract from "@/lib/abis/MockedNftDropContract.json"
+import nftDropContract from "@/lib/abis/MockedAirdropContract.json"
 import { useWriteContract } from "wagmi"
 
 export default function NFTClaimPage() {
@@ -29,7 +29,7 @@ export default function NFTClaimPage() {
     nftName: "ZK Avatar",
     description: "Exclusive identity-bound NFT",
     eligibility: "Early community members",
-    expiresIn: "7 days",
+    expiresIn: "5 days",
     region: "South America",
   }
 
@@ -60,7 +60,7 @@ export default function NFTClaimPage() {
       await writeContract({
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
         abi: nftDropContract.abi,
-        functionName: "claimNFT"
+        functionName: "airdrop"
       });
   
       // The response from the transaction is usually a transaction hash
@@ -141,7 +141,7 @@ useEffect(() => {
                 <div className="flex items-start p-3 rounded-lg bg-blue-50 border border-blue-100">
                   <Info className="h-5 w-5 text-blue-500 mr-2 flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-blue-700">
-                    This airdrop is exclusively available to verified users in your region. Your privacy is protected
+                    This NFT is exclusively available to verified users in your region. Your privacy is protected
                     through zero-knowledge proofs.
                   </p>
                 </div>
