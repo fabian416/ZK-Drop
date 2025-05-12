@@ -23,7 +23,7 @@ export default function Presale() {
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
-  const [proof, setProof] = useState<any>(null)
+  const [proof, setProof] = useState<unknown>(null);
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract();
   
@@ -35,7 +35,6 @@ export default function Presale() {
     endsIn: "3 days 14 hours",
     region: "South America",
   }
-
 
   const handlePurchase = async () => {
     if (!identity) {

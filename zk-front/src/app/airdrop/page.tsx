@@ -20,7 +20,7 @@ export default function Airdrop() {
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
-  const [proof, setProof] = useState<any>(null)
+  const [proof, setProof] = useState<unknown>(null);
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract();
 
