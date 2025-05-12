@@ -113,7 +113,7 @@ export default function Dashboard() {
 
               {/* Botón en la parte inferior */}
               <Link href="/presale" className="block w-full mt-auto">
-                <Button className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white">
+                <Button className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white cursor-pointer">
                   <span>Buy Tokens</span>
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
@@ -174,7 +174,7 @@ export default function Dashboard() {
 
             {/* Botón en la parte inferior */}
             <Link href="/airdrop" className="block w-full mt-auto">
-              <Button className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white">
+              <Button className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white cursor-pointer">
                 <span>Claim Airdrop</span>
                 <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
@@ -227,7 +227,7 @@ export default function Dashboard() {
 
             {/* Botón en la parte inferior */}
             <Link href="/nft" className="block w-full mt-auto">
-              <Button className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white">
+              <Button className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white cursor-pointer">
                 <span>Claim NFT</span>
                 <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
