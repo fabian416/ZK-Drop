@@ -8,7 +8,7 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 import ZKPassportModal from "@/components/ZkPassport"
-import airdropContract from "@/lib/abis/MockedAirdropContract.sol.json"
+import airdropContract from "@/lib/abis/MockedAirdropContract.json"
 import { useWriteContract } from "wagmi"
 
 export default function Airdrop() {
@@ -26,10 +26,10 @@ export default function Airdrop() {
 
   // Mocked data for airdrop
   const airdropData = {
-    tokenName: "ZKL",
-    tokenAmount: "250 ZKL",
+    tokenName: "NRH",
+    tokenAmount: "250 NRH",
     tokenValue: "$212.50",
-    eligibility: "Early community members in South America",
+    eligibility: "Early community members",
     expiresIn: "7 days",
     region: "South America",
   }
