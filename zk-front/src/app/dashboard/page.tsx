@@ -174,45 +174,6 @@ export default function Dashboard() {
             </Link>
           </Card>
         </div>
-
-        {/* Status Verification */}
-        <div className="mt-8 p-4 rounded-lg bg-[#f0eeff] border border-[#453978]/20 mx-auto">
-          <div className="flex items-center">
-            {verificationStatus === "verified" ? (
-              <>
-                <div className="h-8 w-8 rounded-full bg-[#c1ff72] flex items-center justify-center mr-3">
-                  <Check className="h-5 w-5 text-[#453978]" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-[#453978]">Location Verification Active</h3>
-                  <p className="text-sm text-gray-600">
-                    Your ZK proof is valid and your regional benefits are unlocked.
-                  </p>
-                </div>
-              </>
-            ) : verificationStatus === "pending" ? (
-              <>
-                <div className="h-8 w-8 rounded-full bg-yellow-100 flex items-center justify-center mr-3">
-                  <Clock className="h-5 w-5 text-yellow-600" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-yellow-700">Verification Pending</h3>
-                  <p className="text-sm text-gray-600">Your location verification is still pending.</p>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center mr-3">
-                  <X className="h-5 w-5 text-red-600" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-red-700">Verification Failed</h3>
-                  <p className="text-sm text-gray-600">Please try generating a new ZK proof.</p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   )
