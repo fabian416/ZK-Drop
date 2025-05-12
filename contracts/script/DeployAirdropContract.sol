@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Script} from "forge-std/Script.sol";
-import {AirdropContracts} from "../src/AirdropContracts.sol";
+import {MockedAirdropContract} from "../src/MockedAirdropContract.sol";
 
 contract DeployAirdropContract is Script {
     uint256 public _airdrop_amount = 0.5 ether;
@@ -10,7 +10,7 @@ contract DeployAirdropContract is Script {
     
     function run() public {
         vm.startBroadcast();
-        new AirdropContracts(_airdrop_amount, _circulating_supply);
+        new MockedAirdropContract(_airdrop_amount, _circulating_supply);
         vm.stopBroadcast();
     }
 }
