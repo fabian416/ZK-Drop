@@ -11,4 +11,8 @@ contract MockUSDC is ERC20 {
     function decimals() public pure override returns (uint8) {
         return 6;
     }
+
+    function mint(uint256 amount) public {
+        _mint(msg.sender, amount);
+    }
 }
