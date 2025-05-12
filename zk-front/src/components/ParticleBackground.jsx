@@ -1,42 +1,43 @@
-'use client'
-
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 const ParticleBackground = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
+  const mountRef = useRef(null);
 
   useEffect(() => {
     const mount = mountRef.current;
-    if (!mount) return; 
 
-    // Create the scene
+    // Crear la escena
     const scene = new THREE.Scene();
 
-    const camera = new THREE.PerspectiveCamera(40, mount.clientWidth / mount.clientHeight, 0.1, 10000);
+    // Crear la cámara
+    const camera = new THREE.PerspectiveCamera(
+      40,
+      mount.clientWidth / mount.clientHeight,
+      0.1,
+      10000
+    );
     camera.position.z = 5;
 
     // Crear el renderer
     const renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor(0x000000, 1); // Fondo negro fijo
+    renderer.setClearColor(0xffffff, 1); // Fondo blanco
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     mount.appendChild(renderer.domElement);
 
-    // Generar una textura circular manualmente (siempre blanca)
+    // Generar una textura circular violeta
     const generateCircleTexture = () => {
-      const size = 50; // Tamaño de la textura
+      const size = 50;
       const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
       const context = canvas.getContext("2d");
 
-      // Dibujar un círculo blanco
-      if (context) {
-        context.beginPath();
-        context.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-        context.fillStyle = "white"; // Siempre blanco
-        context.fill();
-      }
+      context.beginPath();
+      context.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+      context.fillStyle = "#8e44ad"; // Violeta
+      context.fill();
+
       return new THREE.CanvasTexture(canvas);
     };
 
@@ -46,32 +47,41 @@ const ParticleBackground = () => {
     const particleCount = 5000;
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesMaterial = new THREE.PointsMaterial({
-      color: 0xffffff, // Puntos blancos fijos
-      size: 0.02, // Tamaño de las partículas
-      sizeAttenuation: true, // Tamaño ajustado a la perspectiva
-      map: circleTexture, // Aplicar textura circular
-      transparent: true, // Hacer transparente los bordes
+      color: 0x8e44ad, // Violeta
+      size: 0.02,
+      sizeAttenuation: true,
+      map: circleTexture,
+      transparent: true,
+      depthWrite: false,
     });
 
     const positions = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 10; // Partículas distribuidas aleatoriamente
+      positions[i] = (Math.random() - 0.5) * 10;
     }
     particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 
-    // Animation
+    // Animación: caída vertical
     const animate = () => {
       requestAnimationFrame(animate);
-      particles.rotation.y += 0.002; // Rotar las partículas
+
+      const pos = particlesGeometry.attributes.position.array;
+      for (let i = 1; i < pos.length; i += 3) {
+        pos[i] -= 0.002;
+        if (pos[i] < -5) {
+          pos[i] = 5;
+        }
+      }
+
+      particlesGeometry.attributes.position.needsUpdate = true;
       renderer.render(scene, camera);
     };
 
     animate();
 
-    // Function to manage the resize
     const handleResize = () => {
       const width = mount.clientWidth;
       const height = mount.clientHeight;
@@ -80,15 +90,13 @@ const ParticleBackground = () => {
       camera.updateProjectionMatrix();
     };
 
-    // Agregar event listener para el resize
     window.addEventListener("resize", handleResize);
 
-    // Cleanup on unmount
     return () => {
       window.removeEventListener("resize", handleResize);
       mount.removeChild(renderer.domElement);
     };
-  }, []); // Dependencias vacías: solo se ejecuta una vez
+  }, []);
 
   return (
     <div

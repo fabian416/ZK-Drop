@@ -69,7 +69,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto">
           {/* Presale Card */}
           <Card
-              className={`p-6 border-2 h-full flex flex-col justify-between ${
+              className={`p-6 pt-10 border-2 h-full flex flex-col justify-between ${
                 presaleData.available ? "border-[#c1ff72]/40" : "border-gray-200"
               } relative overflow-hidden`}
             >
@@ -122,7 +122,7 @@ export default function Dashboard() {
             </Card>
           {/* Airdrop Card */}
           <Card
-            className={`p-6 border-2 h-full flex flex-col justify-between ${
+            className={`p-6 pt-10 border-2 h-full flex flex-col justify-between ${
               airdropData.available ? "border-[#c1ff72]/40" : "border-gray-200"
             } relative overflow-hidden`}
           >
@@ -183,7 +183,7 @@ export default function Dashboard() {
           </Card>
           {/* NFT Drop Card */}
           <Card
-            className={`p-6 border-2 h-full flex flex-col justify-between ${
+            className={`p-6 pt-10 border-2 h-full flex flex-col justify-between ${
               nftDropData.available ? "border-[#c1ff72]/40" : "border-gray-200"
             } relative overflow-hidden`}
           >

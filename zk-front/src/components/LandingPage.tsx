@@ -42,7 +42,9 @@ export default function LandingPage() {
         </p>
       </div>
 
-      <DynamicAppKitButton />
+      <div className="h-12">
+        <DynamicAppKitButton />
+      </div>
 
       <p className="text-sm text-gray-600">
         Your detected region:{" "}
