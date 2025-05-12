@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ZKPassport } from '@zkpassport/sdk';
-import { useRouter } from 'next/navigation';
 import QRCode from 'react-qr-code';
 import { v4 as uuidv4 } from 'uuid';
 import * as circomlib from 'circomlibjs';
@@ -28,7 +27,7 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
   const zkpassportRef = useRef<ZKPassport | null>(null);
   const proofRef = useRef<any | null>(null);
 
-  const router = useRouter();
+  // const router = useRouter(); // Removed to avoid server-side context error
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -125,7 +124,7 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
     runZkPassport();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, router]);
+  }, [open]);
 
     const useDemoIdentity = () => {
         const data = {
