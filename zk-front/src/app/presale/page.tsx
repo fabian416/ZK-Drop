@@ -8,7 +8,7 @@ import { ArrowLeft, Coins, Info, Check } from "lucide-react"
 import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs"
 import QRCode from "react-qr-code"
-import presaleContract from "@/lib/abis/PreSale.json"
+import presaleContract from "@/lib/abis/PreSaleMock.json"
 import usdcContract from "@/lib/abis/MockUSDC.json"
 import { useWriteContract } from "wagmi"
 import ZKPassportModal from "@/components/ZkPassport"
@@ -63,20 +63,10 @@ export default function Presale() {
   
     setIsPurchasing(true);
     try {
-
-      const hash = await writeContract({
-        address: process.env.NEXT_PUBLIC_PRESALE_TOKEN_CONTRACT_ADDRESS as `0x${string}`,
-        abi: usdcContract.abi,
-        functionName: "mint",
-        args: [Number.parseFloat(amount)]
-      });
-
-      console.log(hash)
       await writeContract({
         address: process.env.NEXT_PUBLIC_PRESALE_CONTRACT_ADDRESS as `0x${string}`,
-        abi: presaleContract.abi,
-        functionName: "buyWithUsdt",
-        args: [Number.parseFloat(amount)]
+        abi: presaleContract,
+        functionName: "buy"
       });
   
       console.log("Transaction hash:", data);
