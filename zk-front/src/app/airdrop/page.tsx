@@ -8,7 +8,6 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 
-
 export default function Airdrop() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isClaiming, setIsClaiming] = useState(false)

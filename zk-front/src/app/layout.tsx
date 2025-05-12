@@ -1,6 +1,7 @@
 import "./globals.css"
 import type { Metadata } from "next"
 import ContextProvider from "@/context"
+import Header from "@/components/Header"
 import { headers } from "next/headers"
 
 export const metadata: Metadata = {
@@ -18,8 +19,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body>
+      <body className="bg-[#f8f7ff]">
         <ContextProvider cookies={cookies}>
+          <Header /> 
           {children}
         </ContextProvider>
       </body>
