@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, Gift, Info, Check } from "lucide-react"
@@ -8,7 +8,7 @@ import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs" // o getPublicInputsForUSA
 import QRCode from "react-qr-code"
 import ZKPassportModal from "@/components/ZkPassport"
-import airdropContract from "@/lib/abis/HonkVerifier.json"
+import airdropContract from "@/lib/abis/AirdropContracts.json"
 import { useWriteContract } from "wagmi"
 
 export default function Airdrop() {
@@ -22,12 +22,12 @@ export default function Airdrop() {
   const [identity, setIdentity] = useState(false)
   const [proof, setProof] = useState<any>(null)
 
-  const { writeContract, isPending } = useWriteContract()
+  const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract();
 
   // Mocked data for airdrop
   const airdropData = {
-    tokenName: "ZKD",
-    tokenAmount: "250 ZKD",
+    tokenName: "ZKL",
+    tokenAmount: "250 ZKL",
     tokenValue: "$212.50",
     eligibility: "Early community members in South America",
     expiresIn: "7 days",
@@ -51,26 +51,41 @@ export default function Airdrop() {
   }
 
   const handleSendTransaction = async () => {
-    if (!proof) return
-    
-    setIsClaiming(true)
-    try {
-      const response = await writeContract({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`, // Replace with actual contract address
-        abi: airdropContract.abi,
-        functionName: "claimAirdrop",
-        args: [proof],
-      })
-
-      console.log("Transaction response:", response)
-      setIsClaimed(true)
-    } catch (err) {
-      console.error("Error sending transaction:", err)
-      alert("Failed to claim airdrop on-chain.")
-    } finally {
-      setIsClaiming(false)
+    if (!proof) {
+      alert("No proof available to submit.");
+      return;
     }
+  
+    setIsClaiming(true);
+    try {
+      await writeContract({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        abi: airdropContract.abi,
+        functionName: "airdrop",
+        args: [proof], 
+      });
+  
+      // The response from the transaction is usually a transaction hash
+      console.log("Transaction hash:", data);
+    } catch (err) {
+      console.error("Error sending transaction:", err);
+      alert("Failed to claim airdrop on-chain.");
+    } finally {
+      setIsClaiming(false);
+    }
+  };
+
+  // Chech the transaction status
+useEffect(() => {
+  if (isSuccess && data) {
+    console.log("Transaction successful, hash:", data);
+    setIsClaimed(true);
   }
+  if (isError) {
+    console.error("Transaction error:", error);
+    alert("Transaction failed: " + error?.message);
+  }
+}, [isSuccess, isError, data, error]);
 
   const handleVerifyIdentity = async () => {
     setShowIdentity(true)
@@ -78,8 +93,13 @@ export default function Airdrop() {
 
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-12 flex justify-center">
-      <Button onClick={handleSendTransaction}>Send Transaction</Button>
-      {showIdentity && <ZKPassportModal open={showIdentity} onClose={() => setShowIdentity(false)} setIdentity={setIdentity} />}
+      {showIdentity && (
+        <ZKPassportModal
+          open={showIdentity}
+          onClose={() => setShowIdentity(false)}
+          setIdentity={setIdentity}
+        />
+      )}
       <div className="container max-w-lg px-4">
         <div className="text-center mb-6">
           <Link href="/dashboard" className="inline-flex items-center text-[#453978] hover:underline">
@@ -183,10 +203,10 @@ export default function Airdrop() {
               ) : (
                 <Button
                   onClick={handleSendTransaction}
-                  disabled={isPending}
+                  disabled={isPending || isClaiming}
                   className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
                 >
-                  {isPending ? (
+                  {(isPending || isClaiming) ? (
                     <span className="flex items-center">
                       <svg
                         className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
@@ -208,7 +228,7 @@ export default function Airdrop() {
                           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                         ></path>
                       </svg>
-                      Sending Transaction...
+                      Processing...
                     </span>
                   ) : (
                     <span>Claim Airdrop On-Chain</span>
@@ -245,5 +265,5 @@ export default function Airdrop() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
