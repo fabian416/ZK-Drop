@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,6 +8,9 @@ import { ArrowLeft, Coins, Info, Check } from "lucide-react"
 import Link from "next/link"
 import { getPublicInputsForUSA } from "@/lib/publicInputs"
 import QRCode from "react-qr-code"
+import presaleContract from "@/lib/abis/PreSale.json"
+import { useWriteContract } from "wagmi"
+import ZKPassportModal from "@/components/ZkPassport"
 
 export default function Presale() {
   const [amount, setAmount] = useState("")
@@ -17,8 +20,12 @@ export default function Presale() {
   const [isPurchased, setIsPurchased] = useState(false)
   const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
-  
+  const [showIdentity, setShowIdentity] = useState(false)
+  const [identity, setIdentity] = useState(false)
+  const [proof, setProof] = useState<any>(null)
 
+  const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract();
+  
   // Mocked data for presale
   const presaleData = {
     tokenName: "ZKL",
@@ -30,6 +37,11 @@ export default function Presale() {
 
 
   const handlePurchase = async () => {
+    if (!identity) {
+      setShowIdentity(true)
+      return
+    }
+    
     try {
       const publicInputs = await getPublicInputsForUSA()
       setQrData(JSON.stringify(publicInputs))
@@ -40,6 +52,51 @@ export default function Presale() {
     }
   }
 
+  const handleSubmitProof = async (receivedProof: any) => {
+    setProof(receivedProof)
+    setShowQr(false)
+  }
+
+  const handleSendTransaction = async () => {
+    if (!proof) {
+      alert("No proof available to submit.");
+      return;
+    }
+  
+    setIsPurchasing(true);
+    try {
+      await writeContract({
+        address: process.env.NEXT_PUBLIC_PRESALE_CONTRACT_ADDRESS as `0x${string}`,
+        abi: presaleContract.abi,
+        functionName: "buyWithUsdt",
+        args: [Number.parseFloat(amount)]
+      });
+  
+      console.log("Transaction hash:", data);
+    } catch (err) {
+      console.error("Error sending transaction:", err);
+      alert("Failed to purchase tokens on-chain.");
+    } finally {
+      setIsPurchasing(false);
+    }
+  };
+
+  // Check the transaction status
+  useEffect(() => {
+    if (isSuccess && data) {
+      console.log("Transaction successful, hash:", data);
+      setIsPurchased(true);
+    }
+    if (isError) {
+      console.error("Transaction error:", error);
+      alert("Transaction failed: " + error?.message);
+    }
+  }, [isSuccess, isError, data, error]);
+
+  const handleVerifyIdentity = async () => {
+    setShowIdentity(true)
+  }
+
   const calculateTotal = () => {
     const numAmount = Number.parseFloat(amount) || 0
     return (numAmount * presaleData.tokenPrice).toFixed(2)
@@ -47,6 +104,13 @@ export default function Presale() {
 
   return (
     <div className="min-h-screen bg-[#f8f7ff] py-12 flex justify-center">
+      {showIdentity && (
+        <ZKPassportModal
+          open={showIdentity}
+          onClose={() => setShowIdentity(false)}
+          setIdentity={setIdentity}
+        />
+      )}
       <div className="container max-w-lg px-4">
         <div className="text-center mb-6">
           <Link href="/dashboard" className="inline-flex items-center text-[#453978] hover:underline">
@@ -122,42 +186,87 @@ export default function Presale() {
                 </div>
               </div>
   
-              {/* 👉 Botón Purchase */}
-              <Button
-                onClick={handlePurchase}
-                disabled={isPurchasing || !amount || Number.parseFloat(amount) < presaleData.minPurchase}
-                className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
-              >
-                {isPurchasing ? (
-                  <span className="flex items-center">
-                    <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Processing...
-                  </span>
-                ) : (
-                  <span>Purchase Tokens</span>
-                )}
-              </Button>
+              {/* Purchase Button */}
+              {!showQr && !proof ? (
+                <Button
+                  onClick={handlePurchase}
+                  disabled={isPurchasing || !amount || Number.parseFloat(amount) < presaleData.minPurchase}
+                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
+                >
+                  {isPurchasing ? (
+                    <span className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : !identity ? (
+                    <span>Verify Identity before purchasing</span>
+                  ) : (
+                    <span>Generate Proof</span>
+                  )}
+                </Button>
+              ) : showQr ? (
+                <Button
+                  onClick={() => handleSubmitProof({ proof: "mock-proof-data" })}
+                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
+                >
+                  I've generated my proof
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleSendTransaction}
+                  disabled={isPending || isPurchasing}
+                  className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white"
+                >
+                  {(isPending || isPurchasing) ? (
+                    <span className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    <span>Complete Purchase On-Chain</span>
+                  )}
+                </Button>
+              )}
   
-              {/* Qr code with public inputs */}
+              {/* QR code with public inputs */}
               {showQr && qrData && (
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-600 mb-2">
