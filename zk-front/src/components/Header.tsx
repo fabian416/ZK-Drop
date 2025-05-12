@@ -6,7 +6,7 @@ const DynamicAppKitButton = dynamic(() => import("../components/AppKitButton"), 
 
 export default function Header() {
   return (
-    <header className="w-full px-4 py-3 flex justify-end border-b border-[#453978]/10 bg-[#f8f7ff]">
+    <header className="absolute top-0 left-0 right-0 flex justify-end bg-transparent my-2">
       <DynamicAppKitButton />
     </header>
   )
