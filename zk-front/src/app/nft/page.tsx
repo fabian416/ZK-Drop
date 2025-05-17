@@ -57,7 +57,7 @@ export default function NFTClaimPage() {
       await writeContract({
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS_NFT as `0x${string}`,
         abi: nftDropContract,
-        functionName: "airdrop"
+        functionName: "airdrop",
       })
       console.log("Transaction hash:", data)
     } catch (err) {
