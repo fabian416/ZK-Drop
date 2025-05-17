@@ -40,6 +40,8 @@ export class ZkProofService {
     const proof = await backend.generateProof(witness, { keccak: true });
     this.logger.log("Proof length (bytes):", proof.proof.length);
     this.logger.log("Public inputs length (bytes):", proof.publicInputs.length * 32);
-    return { proof, inputs };
+
+    const { lat, lon, ...publicInputs } = inputs;
+    return { proof, publicInputs };
   }
 }

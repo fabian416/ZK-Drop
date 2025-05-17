@@ -21,8 +21,8 @@ export default function NFTClaimPage() {
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
-  const [proof, setProof] = useState<unknown>(null)
-  const [inputs, setInputs] = useState<unknown>(null)
+  const [proof, setProof] = useState<any>(null)
+  const [inputs, setInputs] = useState<any>(null)
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract()
 
@@ -34,40 +34,43 @@ export default function NFTClaimPage() {
     region: "North America"
   }
 
+
+
   const handleClaim = async () => {
-      try {
-        const position = await new Promise<GeolocationPosition>((resolve, reject) =>
-          navigator.geolocation.getCurrentPosition(resolve, reject)
-        );
-    
-        const lat = Math.round(position.coords.latitude * 1e6);
-        const lon = Math.round(position.coords.longitude * 1e6);
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject)
+      );
   
-        const privateInputs = await getPrivateInputs({ lat, lon });
-        const publicInputs = await getPublicInputsForArgentina()
-    
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/zk-proof/generate-proof`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({...publicInputs, ...privateInputs}),
-        })
-    
-        if (!response.ok) throw new Error("Failed to get ZK proof from backend")
-    
-        const {proof, inputs} = await response.json();
-        setProof(proof);
-        setInputs(inputs);
-        console.log("✅ Backend proof:", proof);
-        console.log("✅ Backend inputs:", inputs);
-    
-        setQrData(JSON.stringify(publicInputs))
-        setShowQr(true)
-      } catch (err) {
-        console.error("Error generating proof or inputs:", err)
-        alert("Could not generate ZK inputs or proof.")
-      }
+      const lat = Math.round(position.coords.latitude * 1e6);
+      const lon = Math.round(position.coords.longitude * 1e6);
+
+      const privateInputs = await getPrivateInputs({ lat, lon });
+      const publicInputs = await getPublicInputsForArgentina()
+  
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/zk-proof/generate-proof`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({...publicInputs, ...privateInputs}),
+      })
+  
+      if (!response.ok) throw new Error("Failed to get ZK proof from backend")
+  
+      const {proof, inputs} = await response.json()
+
+      setProof(proof);
+      setInputs(inputs);
+      console.log("✅ Backend proof:", proof);
+      console.log("✅ Backend inputs:", inputs);
+  
+      setQrData(JSON.stringify(publicInputs))
+      setShowQr(true)
+    } catch (err) {
+      console.error("Error generating proof or inputs:", err)
+      alert("Could not generate ZK inputs or proof.")
+    }
   }
 
   const handleSubmitProof = async (receivedProof: unknown) => {
@@ -77,13 +80,15 @@ export default function NFTClaimPage() {
   const handleSendTransaction = async () => {
     if (!proof) return alert("No proof available to submit.")
 
+    const proofToSend = "0x" + [...proof].map(b => b.toString(16).padStart(2, "0")).join("");
+
     setIsClaiming(true)
     try {
       await writeContract({
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS_NFT as `0x${string}`,
         abi: nftDropContract,
         functionName: "airdrop",
-        args: [proof, inputs]
+        args: [proofToSend, inputs]
       })
       console.log("Transaction hash:", data)
     } catch (err) {
