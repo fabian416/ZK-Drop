@@ -14,7 +14,7 @@ export function ZKDropQRCode({ qrData, onSubmit }: { qrData: string; onSubmit: (
         onClick={onSubmit}
         className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white cursor-pointer mt-2"
       >
-        Use demo Proof
+        Use zk Proof
       </Button>
     </div>
   )

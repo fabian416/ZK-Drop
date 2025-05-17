@@ -43,14 +43,10 @@ export default function Airdrop() {
   
       const lat = Math.round(position.coords.latitude * 1e6);
       const lon = Math.round(position.coords.longitude * 1e6);
-      const nullifier = 987654321;
 
-      const privateInputs = await getPrivateInputs({ lat, lon, nullifier });
-      console.log({privateInputs})
+      const privateInputs = await getPrivateInputs({ lat, lon });
       const publicInputs = await getPublicInputsForArgentina()
-      console.log({publicInputs})
   
-      // Llamada al backend
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/zk-proof/generate-proof`, {
         method: "POST",
         headers: {
@@ -61,17 +57,13 @@ export default function Airdrop() {
   
       if (!response.ok) throw new Error("Failed to get ZK proof from backend")
   
-      const result = await response.json()
+      const {proof, inputs} = await response.json()
   
-      console.log("✅ Backend proof result:", result)
+      console.log("✅ Backend proof:", proof);
+      console.log("✅ Backend inputs:", inputs);
   
-      // Guardar inputs en QR si querés seguir mostrándolos para debug o pruebas
       setQrData(JSON.stringify(publicInputs))
       setShowQr(true)
-  
-      // También podrías setear `proof` directamente si el backend ya te devuelve eso
-      // setProof(result.proof)
-  
     } catch (err) {
       console.error("Error generating proof or inputs:", err)
       alert("Could not generate ZK inputs or proof.")

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
-import { getPublicInputsForUSA } from "@/lib/publicInputs"
+import { getPrivateInputs, getPublicInputsForArgentina, getPublicInputsForUSA } from "@/lib/publicInputs"
 import { useWriteContract } from "wagmi"
 import nftDropContract from "@/lib/abis/AirdropMockedNFT.json"
 import ZKDropHeader from "@/components/ZKDropHeader"
@@ -22,6 +22,7 @@ export default function NFTClaimPage() {
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
   const [proof, setProof] = useState<unknown>(null)
+  const [inputs, setInputs] = useState<unknown>(null)
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract()
 
@@ -34,19 +35,43 @@ export default function NFTClaimPage() {
   }
 
   const handleClaim = async () => {
-    try {
-      const publicInputs = await getPublicInputsForUSA()
-      setQrData(JSON.stringify(publicInputs))
-      setShowQr(true)
-    } catch (err) {
-      console.error("Error generating public inputs:", err)
-      alert("Could not generate ZK inputs.")
-    }
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject)
+        );
+    
+        const lat = Math.round(position.coords.latitude * 1e6);
+        const lon = Math.round(position.coords.longitude * 1e6);
+  
+        const privateInputs = await getPrivateInputs({ lat, lon });
+        const publicInputs = await getPublicInputsForArgentina()
+    
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/zk-proof/generate-proof`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({...publicInputs, ...privateInputs}),
+        })
+    
+        if (!response.ok) throw new Error("Failed to get ZK proof from backend")
+    
+        const {proof, inputs} = await response.json();
+        setProof(proof);
+        setInputs(inputs);
+        console.log("✅ Backend proof:", proof);
+        console.log("✅ Backend inputs:", inputs);
+    
+        setQrData(JSON.stringify(publicInputs))
+        setShowQr(true)
+      } catch (err) {
+        console.error("Error generating proof or inputs:", err)
+        alert("Could not generate ZK inputs or proof.")
+      }
   }
 
   const handleSubmitProof = async (receivedProof: unknown) => {
-    setProof(receivedProof)
-    setShowQr(false)
+    setShowQr(false);
   }
 
   const handleSendTransaction = async () => {
@@ -57,7 +82,8 @@ export default function NFTClaimPage() {
       await writeContract({
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS_NFT as `0x${string}`,
         abi: nftDropContract,
-        functionName: "airdrop"
+        functionName: "airdrop",
+        args: [proof, inputs]
       })
       console.log("Transaction hash:", data)
     } catch (err) {

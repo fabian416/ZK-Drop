@@ -3,28 +3,30 @@ import * as circomlib from "circomlibjs";
 const FIELD_MODULUS = BigInt("21888242871839275222246405745257275088548364400416034343698204186575808495617");
 
 const bigIntToHexString = (value: bigint): string => {
-  return value.toString(16);
-};
+  const adjusted = value >= 0n ? value : (value + FIELD_MODULUS) % FIELD_MODULUS
+  return `0x${adjusted.toString(16)}`
+}
 
 export const poseidonHash = async (minLat: string, maxLat: string, minLon: string, maxLon: string) => {
-  const poseidon = await circomlib.buildPoseidon();
+  const poseidon = await circomlib.buildPoseidon()
+  const parseField = (x: string) => BigInt(x.startsWith("0x") ? x : `0x${x}`)
   return poseidon([
-    BigInt(`0x${minLat}`),
-    BigInt(`0x${maxLat}`),
-    BigInt(`0x${minLon}`),
-    BigInt(`0x${maxLon}`)
-  ]);
-};
+    parseField(minLat),
+    parseField(maxLat),
+    parseField(minLon),
+    parseField(maxLon),
+  ])
+}
 
 export const poseidonHash2 = async (a: bigint, b: bigint) => {
-  const poseidon = await circomlib.buildPoseidon();
-  return poseidon([a, b]);
-};
+  const poseidon = await circomlib.buildPoseidon()
+  return poseidon([a, b])
+}
 
 export const convertHashToHex = async (hash: unknown): Promise<string> => {
-    const poseidon = await circomlib.buildPoseidon();
-    return `0x${poseidon.F.toObject(hash).toString(16)}`;
-  }
+  const poseidon = await circomlib.buildPoseidon()
+  return `0x${poseidon.F.toObject(hash).toString(16)}`
+}
 
 export const getPublicInputsForUSA = async () => {
   const minLat = BigInt(24396308); // 24.396308
@@ -48,64 +50,60 @@ export const getPublicInputsForUSA = async () => {
   const sessionHashHex = await convertHashToHex(sessionHashRaw);
 
   return {
-    min_lat: `0x${minLatHex}`,
-    max_lat: `0x${maxLatHex}`,
-    min_lon: `0x${minLonHex}`,
-    max_lon: `0x${maxLonHex}`,
+    min_lat: minLatHex,
+    max_lat: maxLatHex,
+    min_lon: minLonHex,
+    max_lon: maxLonHex,
     region_hash: regionHashHex,
     challenge: "0x3039",
-    session_hash: sessionHashHex
+    nullifier: sessionHashHex
   };
 };
 
+export const getPrivateInputs = async ({ lat, lon }) => {
+  const latBigInt = BigInt(lat);
+  const lonBigInt = BigInt(lon);
 
-export const getPrivateInputs = async ({lat, lon, nullifier}) => {
-  const bigIntLat = BigInt(lat);
-  const BigIntLon = BigInt(lon);
-  const bigIntNullifier = BigInt(nullifier);
-
-  const adjustedLon = (BigIntLon + FIELD_MODULUS) % FIELD_MODULUS;
-
-  const latHex = bigIntToHexString(bigIntLat);
-  const lonHex = bigIntToHexString(adjustedLon);
-  const nullifierHex = bigIntToHexString(bigIntNullifier);
+  const adjustedLat = latBigInt < 0n ? (latBigInt + FIELD_MODULUS) % FIELD_MODULUS : latBigInt;
+  const adjustedLon = lonBigInt < 0n ? (lonBigInt + FIELD_MODULUS) % FIELD_MODULUS : lonBigInt;
 
   return {
-    lat: `0x${latHex}`,
-    lon: `0x${lonHex}`,
-    nullifier: `0x${nullifierHex}`,
+    lat: `0x${adjustedLat.toString(16)}`,
+    lon: `0x${adjustedLon.toString(16)}`,
   };
 };
 
 
 export const getPublicInputsForArgentina = async () => {
-    const minLat = BigInt(-55000000); // ejemplo: -55.000000
-    const maxLat = BigInt(-20000000); // -20.000000
-    const minLon = BigInt(-80000000); // -80.000000
-    const maxLon = BigInt(-50000000); // -50.000000
-  
-    const adjustedMinLon = (minLon + FIELD_MODULUS) % FIELD_MODULUS;
-    const adjustedMaxLon = (maxLon + FIELD_MODULUS) % FIELD_MODULUS;
-  
-    const minLatHex = bigIntToHexString(minLat);
-    const maxLatHex = bigIntToHexString(maxLat);
-    const minLonHex = bigIntToHexString(adjustedMinLon);
-    const maxLonHex = bigIntToHexString(adjustedMaxLon);
-  
-    const regionHash = await poseidonHash(minLatHex, maxLatHex, minLonHex, maxLonHex);
-    const regionHashHex = await convertHashToHex(regionHash);
-  
-    const challenge = BigInt(12345);
-    const sessionHashRaw = await poseidonHash2(BigInt(regionHashHex), challenge);
-    const sessionHashHex = await convertHashToHex(sessionHashRaw);
-  
-    return {
-      min_lat: `0x${minLatHex}`,
-      max_lat: `0x${maxLatHex}`,
-      min_lon: `0x${minLonHex}`,
-      max_lon: `0x${maxLonHex}`,
-      region_hash: regionHashHex,
-      challenge: "0x3039",
-      session_hash: sessionHashHex
-    };
+  const rawMinLat = BigInt(-55000000);
+  const rawMaxLat = BigInt(-20000000);
+  const rawMinLon = BigInt(-80000000);
+  const rawMaxLon = BigInt(-50000000);
+
+  const minLat = (rawMinLat + FIELD_MODULUS) % FIELD_MODULUS;
+  const maxLat = (rawMaxLat + FIELD_MODULUS) % FIELD_MODULUS;
+  const minLon = (rawMinLon + FIELD_MODULUS) % FIELD_MODULUS;
+  const maxLon = (rawMaxLon + FIELD_MODULUS) % FIELD_MODULUS;
+
+  const minLatHex = bigIntToHexString(minLat);
+  const maxLatHex = bigIntToHexString(maxLat);
+  const minLonHex = bigIntToHexString(minLon);
+  const maxLonHex = bigIntToHexString(maxLon);
+
+  const regionHash = await poseidonHash(minLatHex, maxLatHex, minLonHex, maxLonHex);
+  const regionHashHex = await convertHashToHex(regionHash);
+
+  const challenge = BigInt(12345);
+  const sessionHashRaw = await poseidonHash2(BigInt(regionHashHex), challenge);
+  const sessionHashHex = await convertHashToHex(sessionHashRaw);
+
+  return {
+    min_lat: minLatHex,
+    max_lat: maxLatHex,
+    min_lon: minLonHex,
+    max_lon: maxLonHex,
+    region_hash: regionHashHex,
+    challenge: "0x3039",
+    nullifier: sessionHashHex,
   };
+};

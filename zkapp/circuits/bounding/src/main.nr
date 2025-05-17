@@ -11,12 +11,12 @@ fn main(
     nullifier: pub Field,
 ) {
     // Cast to unsigned integers
-    let lat_i32 = lat as i32;
-    let lon_i32 = lon as i32;
-    let min_lat_i32 = min_lat as i32;
-    let max_lat_i32 = max_lat as i32;
-    let min_lon_i32 = min_lon as i32;
-    let max_lon_i32 = max_lon as i32;
+    let lat_i32 = lat as i64;
+    let lon_i32 = lon as i64;
+    let min_lat_i32 = min_lat as i64;
+    let max_lat_i32 = max_lat as i64;
+    let min_lon_i32 = min_lon as i64;
+    let max_lon_i32 = max_lon as i64;
 
     // Verify if the cords are inside of the public area
     assert(lat_i32 >= min_lat_i32);
