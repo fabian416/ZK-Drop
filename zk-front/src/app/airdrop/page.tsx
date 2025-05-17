@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Card } from "@/components/ui/card"
-import { getPublicInputsForUSA } from "@/lib/publicInputs"
+import { getPrivateInputs, getPublicInputsForArgentina, getPublicInputsForUSA } from "@/lib/publicInputs"
 import { useWriteContract } from "wagmi"
 import airdropContract from "@/lib/abis/AirdropMock.json"
 import ZKDropHeader from "@/components/ZKDropHeader"
@@ -37,14 +37,47 @@ export default function Airdrop() {
 
   const handleClaim = async () => {
     try {
-      const publicInputs = await getPublicInputsForUSA()
+      const position = await new Promise<GeolocationPosition>((resolve, reject) =>
+        navigator.geolocation.getCurrentPosition(resolve, reject)
+      );
+  
+      const lat = Math.round(position.coords.latitude * 1e6);
+      const lon = Math.round(position.coords.longitude * 1e6);
+      const nullifier = 987654321;
+
+      const privateInputs = await getPrivateInputs({ lat, lon, nullifier });
+      console.log({privateInputs})
+      const publicInputs = await getPublicInputsForArgentina()
+      console.log({publicInputs})
+  
+      // Llamada al backend
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URI}/zk-proof/generate-proof`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({...publicInputs, ...privateInputs}),
+      })
+  
+      if (!response.ok) throw new Error("Failed to get ZK proof from backend")
+  
+      const result = await response.json()
+  
+      console.log("✅ Backend proof result:", result)
+  
+      // Guardar inputs en QR si querés seguir mostrándolos para debug o pruebas
       setQrData(JSON.stringify(publicInputs))
       setShowQr(true)
+  
+      // También podrías setear `proof` directamente si el backend ya te devuelve eso
+      // setProof(result.proof)
+  
     } catch (err) {
-      console.error("Error generating public inputs:", err)
-      alert("Could not generate ZK inputs.")
+      console.error("Error generating proof or inputs:", err)
+      alert("Could not generate ZK inputs or proof.")
     }
   }
+  
 
   const handleSubmitProof = async (receivedProof: unknown) => {
     setProof(receivedProof)

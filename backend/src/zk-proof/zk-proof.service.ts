@@ -13,7 +13,8 @@ export class ZkProofService {
     private readonly logger = new Logger(ZkProofService.name);
 
   async generateProof(s: GenerateProofDto) {
-    const rawCircuitPath = join(process.cwd(), 'public', 'zk_access.json');
+    console.log(s);
+    const rawCircuitPath = join(process.cwd(), 'public', 'bounding.json');
     const rawCircuit = JSON.parse(readFileSync(rawCircuitPath, 'utf8'));
 
     const circuit = rawCircuit as CompiledCircuit;

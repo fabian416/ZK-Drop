@@ -58,6 +58,26 @@ export const getPublicInputsForUSA = async () => {
   };
 };
 
+
+export const getPrivateInputs = async ({lat, lon, nullifier}) => {
+  const bigIntLat = BigInt(lat);
+  const BigIntLon = BigInt(lon);
+  const bigIntNullifier = BigInt(nullifier);
+
+  const adjustedLon = (BigIntLon + FIELD_MODULUS) % FIELD_MODULUS;
+
+  const latHex = bigIntToHexString(bigIntLat);
+  const lonHex = bigIntToHexString(adjustedLon);
+  const nullifierHex = bigIntToHexString(bigIntNullifier);
+
+  return {
+    lat: `0x${latHex}`,
+    lon: `0x${lonHex}`,
+    nullifier: `0x${nullifierHex}`,
+  };
+};
+
+
 export const getPublicInputsForArgentina = async () => {
     const minLat = BigInt(-55000000); // ejemplo: -55.000000
     const maxLat = BigInt(-20000000); // -20.000000
