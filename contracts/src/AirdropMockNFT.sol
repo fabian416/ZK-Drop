@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./NRH.sol"; // Tu contrato ERC721
+import "./erc_tokens/NRH.sol"; // Tu contrato ERC721
 import {IVerifier} from "./Verifier.sol"; // Interfaz esperada del Verifier generado por Noir
 
 contract AirdropMockNFT {

@@ -6,13 +6,10 @@ import {AirdropMockNFT} from "../src/AirdropMockNFT.sol";
 
 contract DeployAirdropMockNFT is Script {
     function run() external {
-        // Use private key from .env
-        uint256 privateKey = vm.envUint("PRIVATE_KEY");
-
         // Verifier addres hardcoded
         address verifierAddress = 0x5ddF795A03C9bd399739FA02BB973D877993ba02;
 
-        vm.startBroadcast(privateKey);
+        vm.startBroadcast();
 
         // Deploy the contract
         AirdropMockNFT nftDrop = new AirdropMockNFT(verifierAddress);
