@@ -22,17 +22,11 @@ contract AirdropMockNFT {
      * @param proof The ZK proof
      * @param publicInputs Expected: [minLat, maxLat, minLon, maxLon, regionHash, challenge, nullifier]
      */
-    function airdrop(bytes calldata proof, uint256[7] calldata publicInputs) external {
-        // Convert uint256[7] to bytes32[] (dynamic array)
-        bytes32[] memory inputs = new bytes32[](7);
-        for (uint256 i = 0; i < 7; i++) {
-            inputs[i] = bytes32(publicInputs[i]);
-        }
+    function airdrop(bytes calldata proof, bytes32[] calldata publicInputs) external {
+        require(verifier.verify(proof, publicInputs), "Invalid ZK proof");
 
-        require(verifier.verify(proof, inputs), "Invalid ZK proof");
-
-        // ⚠️ In production:
-        // uint256 nullifier = publicInputs[6];
+        // // Uncomment for production use
+        // bytes32 nullifier = publicInputs[6];
         // require(!nullifierUsed[nullifier], "Nullifier already used");
         // nullifierUsed[nullifier] = true;
 

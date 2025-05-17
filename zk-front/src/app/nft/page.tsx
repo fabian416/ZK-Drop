@@ -80,7 +80,16 @@ export default function NFTClaimPage() {
   const handleSendTransaction = async () => {
     if (!proof) return alert("No proof available to submit.")
 
-    const proofToSend = "0x" + [...proof].map(b => b.toString(16).padStart(2, "0")).join("");
+    const proofArray = Object.keys(proof)
+      .sort((a, b) => Number(a) - Number(b))
+      .map(k => proof[k]);
+    
+    const proofUint8 = new Uint8Array(proofArray);
+    
+    const hexProof = "0x" + [...proofUint8]
+      .map(b => b.toString(16).padStart(2, "0"))
+      .join("");
+    
 
     setIsClaiming(true)
     try {
@@ -88,7 +97,7 @@ export default function NFTClaimPage() {
         address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS_NFT as `0x${string}`,
         abi: nftDropContract,
         functionName: "airdrop",
-        args: [proofToSend, inputs]
+        args: [hexProof, inputs]
       })
       console.log("Transaction hash:", data)
     } catch (err) {

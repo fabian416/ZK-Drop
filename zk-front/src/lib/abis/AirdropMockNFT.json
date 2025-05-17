@@ -13,8 +13,8 @@
       { "name": "proof", "type": "bytes", "internalType": "bytes" },
       {
         "name": "publicInputs",
-        "type": "uint256[7]",
-        "internalType": "uint256[7]"
+        "type": "bytes32[]",
+        "internalType": "bytes32[]"
       }
     ],
     "outputs": [],
