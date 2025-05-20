@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import {
   clearCircuit,
   extractProof,
+  extractRawPublicInputs,
   generateProof,
   setupCircuit,
   verifyProof,
@@ -129,17 +130,14 @@ export default function BoundingProof() {
       const end = Date.now();
       setProvingTime(end - start);
       setProofWithInputs(proofWithPublicInputs);
+
+      const extractedProof = extractProof(circuit as Circuit, proofWithPublicInputs);
+      const rawPublicInputs = extractRawPublicInputs(circuit as Circuit, proofWithPublicInputs);
+
       console.log("---- ZK Proof and Inputs ----");
-      console.log("Public Inputs (ordered):");
-      console.log([
-        minLat,
-        maxLat,
-        minLon,
-        maxLon,
-        regionHash,
-        challenge,
-        nullifier,
-      ]);
+      console.log("Public Inputs (extracted):");
+      const formattedInputs = rawPublicInputs.match(/.{1,64}/g)?.map(hex => '0x' + hex);
+      console.log(formattedInputs);
 
       console.log("Private Inputs:");
       console.log({
@@ -147,26 +145,11 @@ export default function BoundingProof() {
         lon: lonHex,
       });
 
-      console.log("Full proofWithPublicInputs:");
-      console.log(proofWithPublicInputs);
-
-      console.log("Solidity-compatible calldata:");
-      console.log("publicInputs = [");
-      [
-        minLat,
-        maxLat,
-        minLon,
-        maxLon,
-        regionHash,
-        challenge,
-        nullifier,
-      ].forEach((input) => {
-        console.log(`  ${input},`);
-      });
-      console.log("];");
-      console.log(`proof = "${proofWithPublicInputs}";`);
+      console.log("Proof only:");
+      console.log(`proof = "${extractedProof}";`);
       console.log("------------------------------");
-      setProof(extractProof(circuit as Circuit, proofWithPublicInputs));
+
+      setProof(extractedProof);
       setVkey(_vkey);
     } catch (err: any) {
       Alert.alert('Error', err.message || 'Unable to generate the proof');
