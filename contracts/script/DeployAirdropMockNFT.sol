@@ -7,7 +7,7 @@ import {AirdropMockNFT} from "../src/AirdropMockNFT.sol";
 contract DeployAirdropMockNFT is Script {
     function run() external {
         // Verifier addres hardcoded
-        address verifierAddress = 0x5ddF795A03C9bd399739FA02BB973D877993ba02;
+        address verifierAddress = 0x4E69528229ed9058a93E0Ab5413CC2a01c500933;
 
         vm.startBroadcast();
 
