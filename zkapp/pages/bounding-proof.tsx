@@ -95,7 +95,7 @@ export default function BoundingProof() {
     const maxLon = "0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593ec02a8cf";
     const regionHash = "0xa84bbbb7e92739e37dfe00ec56b943c3b15c58aaeaf91ed5c348083f7e74987";
     const challenge = "0x3039"; // 12345
-    const sessionHash = "0x2804ef4ee0db656a2b181393074541fef5777c16f03fa6aa88f181c0cc94d126";
+    const nullifier = "0x2804ef4ee0db656a2b181393074541fef5777c16f03fa6aa88f181c0cc94d126";
   
     console.log("Generating proof with inputs:", {
       latHex,
@@ -106,7 +106,7 @@ export default function BoundingProof() {
       max_lon: maxLon,
       region_hash: regionHash,
       challenge,
-      session_hash: sessionHash,
+      nullifier: nullifier,
     });
   
     setGeneratingProof(true);
@@ -122,13 +122,50 @@ export default function BoundingProof() {
           max_lon: maxLon,
           region_hash: regionHash,
           challenge,
-          session_hash: sessionHash,
+          nullifier: nullifier,
         },
         circuitId!,
       );
       const end = Date.now();
       setProvingTime(end - start);
       setProofWithInputs(proofWithPublicInputs);
+      console.log("---- ZK Proof and Inputs ----");
+      console.log("Public Inputs (ordered):");
+      console.log([
+        minLat,
+        maxLat,
+        minLon,
+        maxLon,
+        regionHash,
+        challenge,
+        nullifier,
+      ]);
+
+      console.log("Private Inputs:");
+      console.log({
+        lat: latHex,
+        lon: lonHex,
+      });
+
+      console.log("Full proofWithPublicInputs:");
+      console.log(proofWithPublicInputs);
+
+      console.log("Solidity-compatible calldata:");
+      console.log("publicInputs = [");
+      [
+        minLat,
+        maxLat,
+        minLon,
+        maxLon,
+        regionHash,
+        challenge,
+        nullifier,
+      ].forEach((input) => {
+        console.log(`  ${input},`);
+      });
+      console.log("];");
+      console.log(`proof = "${proofWithPublicInputs}";`);
+      console.log("------------------------------");
       setProof(extractProof(circuit as Circuit, proofWithPublicInputs));
       setVkey(_vkey);
     } catch (err: any) {
