@@ -13,6 +13,9 @@ import { ZKDropClaimButton } from "@/components/ZKDropClaimButton"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
 import BackToDashboardButton from "@/components/ZKBackToDashboardButton"
+import { ethers } from 'ethers';
+import { bytesToHex } from 'viem';
+
 
 export default function NFTClaimPage() {
   const [isClaiming, setIsClaiming] = useState(false)
@@ -59,11 +62,11 @@ export default function NFTClaimPage() {
       if (!response.ok) throw new Error("Failed to get ZK proof from backend")
   
       const {proof, inputs} = await response.json()
-
-      setProof(proof);
-      setInputs(inputs);
-      console.log("✅ Backend proof:", proof);
-      console.log("✅ Backend inputs:", inputs);
+      const inp = Object.values(inputs);
+      setProof(proof.proof);
+      setInputs(inp);
+      console.log("✅ Backend proof:", proof.proof);
+      console.log("✅ Backend inputs:", inp);
   
       setQrData(JSON.stringify(publicInputs))
       setShowQr(true)
@@ -80,24 +83,26 @@ export default function NFTClaimPage() {
   const handleSendTransaction = async () => {
     if (!proof) return alert("No proof available to submit.")
 
-    const proofArray = Object.keys(proof)
-      .sort((a, b) => Number(a) - Number(b))
-      .map(k => proof[k]);
-    
-    const proofUint8 = new Uint8Array(proofArray);
-    
-    const hexProof = "0x" + [...proofUint8]
-      .map(b => b.toString(16).padStart(2, "0"))
-      .join("");
-    
-
+      const loadFromPublic = async () => {
+        const proofRes = await fetch('/proof');
+        const proofText = (await proofRes.text()).trim();
+        const proofBytes = ethers.utils.arrayify(proofText);
+      
+        const inputsRes = await fetch('/publicInputs.json');
+        const publicInputs: string[] = await inputsRes.json();
+      
+        return { proofText, publicInputs };
+      };
+      
+      const { proofText, publicInputs } = await loadFromPublic();
+      console.log({proofText});
     setIsClaiming(true)
     try {
       await writeContract({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS_NFT as `0x${string}`,
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS_NFT! as `0x${string}`,
         abi: nftDropContract,
         functionName: "airdrop",
-        args: [hexProof, inputs]
+        args: [proofText, publicInputs]
       })
       console.log("Transaction hash:", data)
     } catch (err) {

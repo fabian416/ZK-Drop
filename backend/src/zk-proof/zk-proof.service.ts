@@ -42,6 +42,6 @@ export class ZkProofService {
     this.logger.log("Public inputs length (bytes):", proof.publicInputs.length * 32);
 
     const { lat, lon, ...publicInputs } = inputs;
-    return { proof, publicInputs };
+    return { proof, inputs: publicInputs };
   }
 }
