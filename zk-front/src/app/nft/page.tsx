@@ -84,9 +84,8 @@ export default function NFTClaimPage() {
     if (!proof) return alert("No proof available to submit.")
 
       const loadFromPublic = async () => {
-        const proofRes = await fetch('/proof');
+        const proofRes = await fetch('/proof.txt');
         const proofText = (await proofRes.text()).trim();
-        const proofBytes = ethers.utils.arrayify(proofText);
       
         const inputsRes = await fetch('/publicInputs.json');
         const publicInputs: string[] = await inputsRes.json();
@@ -95,7 +94,7 @@ export default function NFTClaimPage() {
       };
       
       const { proofText, publicInputs } = await loadFromPublic();
-      console.log({proofText});
+      console.log({proofText, publicInputs});
     setIsClaiming(true)
     try {
       await writeContract({
