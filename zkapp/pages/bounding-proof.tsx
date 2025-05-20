@@ -129,6 +129,43 @@ export default function BoundingProof() {
       const end = Date.now();
       setProvingTime(end - start);
       setProofWithInputs(proofWithPublicInputs);
+      console.log("---- ZK Proof and Inputs ----");
+      console.log("Public Inputs (ordered):");
+      console.log([
+        minLat,
+        maxLat,
+        minLon,
+        maxLon,
+        regionHash,
+        challenge,
+        nullifier,
+      ]);
+
+      console.log("Private Inputs:");
+      console.log({
+        lat: latHex,
+        lon: lonHex,
+      });
+
+      console.log("Full proofWithPublicInputs:");
+      console.log(proofWithPublicInputs);
+
+      console.log("Solidity-compatible calldata:");
+      console.log("publicInputs = [");
+      [
+        minLat,
+        maxLat,
+        minLon,
+        maxLon,
+        regionHash,
+        challenge,
+        nullifier,
+      ].forEach((input) => {
+        console.log(`  ${input},`);
+      });
+      console.log("];");
+      console.log(`proof = "${proofWithPublicInputs}";`);
+      console.log("------------------------------");
       setProof(extractProof(circuit as Circuit, proofWithPublicInputs));
       setVkey(_vkey);
     } catch (err: any) {
