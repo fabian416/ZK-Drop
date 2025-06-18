@@ -37,18 +37,19 @@ export default function BoundingProof() {
   const [barcodes, setBarcodes] = useState<Barcode[]>([]);
   const device = useCameraDevice('back');
   const { props: cameraProps, highlights } = useBarcodeScanner({
-  fps: 5,
-  barcodeTypes: ['qr'],
-  onBarcodeScanned: (barcodes) => {
+    fps: 5,
+    barcodeTypes: ['qr'],
+    onBarcodeScanned: (barcodes) => {
     if (barcodes.length > 0) {
-      const data = barcodes[0].rawValue;
-      if (data) {
-        Alert.alert('QR Scanned', data);
-        setShowScanner(false);
+        const data = barcodes[0].rawValue;
+        if (data) {
+          runOnJS(Alert.alert)('QR Scanned', data);
+          runOnJS(postProofToBackend)(data, "proof");
+          runOnJS(setShowScanner)(false);
+        }
       }
     }
-  },
-});
+  });
 
 
 
@@ -204,6 +205,32 @@ export default function BoundingProof() {
     }
     setVerifyingProof(false);
   };
+
+  const postProofToBackend = async (url: string, proof: string) => {
+  try {
+      const parsedUrl = new URL(url);
+      const id = parsedUrl.pathname.split('/').pop(); // extrae el UUID del path
+
+    const endpoint = `http://localhost:5000/relay-session/${id}`;
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ value: proof }),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    Alert.alert('Success', 'Proof sent successfully!');
+  } catch (err: any) {
+    Alert.alert('Error sending proof', err.message || 'Unknown error');
+  }
+};
+
 
   return (
     <MainLayout canGoBack={true}>
