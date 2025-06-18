@@ -5,6 +5,7 @@ import { ZKPassport } from '@zkpassport/sdk';
 import { v4 as uuidv4 } from 'uuid';
 import * as circomlib from 'circomlibjs';
 import { ZKDropQRCode } from './ZKDropQRCode';
+import QRCode from 'react-qr-code';
 
 type ZKPassportModalProps = {
   open: boolean;
@@ -215,7 +216,7 @@ export default function ZKPassportModal({ open, onClose, setIdentity }: ZKPasspo
             </div>
             ) : url ? (
             <div className="flex justify-center mb-4">
-              <ZKDropQRCode onSubmit={() => {}} />
+              <QRCode value={url} size={256} />
             </div>
             ) : (
             <p className="text-gray-500 mb-4 text-center">Waiting for request...</p>
