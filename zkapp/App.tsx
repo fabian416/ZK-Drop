@@ -7,6 +7,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import SimpleProof from './pages/simple-proof';
 import PoseidonProof from './pages/poseidon-proof';
 import BoundingProof from './pages/bounding-proof';
+import "./global.css"
+
 
 const Stack = createNativeStackNavigator();
 
