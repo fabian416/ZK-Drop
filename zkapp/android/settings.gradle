@@ -2,3 +2,7 @@ rootProject.name = 'NoirReactNative'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
+include(":react-native-worklets-core")
+project(":react-native-worklets-core").projectDir = new File(rootProject.projectDir, "../node_modules/react-native-worklets-core/android")
+include(":mgcrea_vision-camera-barcode-scanner")
+project(":mgcrea_vision-camera-barcode-scanner").projectDir = new File(rootProject.projectDir, "../node_modules/@mgcrea/vision-camera-barcode-scanner/android")

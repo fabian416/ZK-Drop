@@ -1,5 +1,6 @@
+import 'react-native-reanimated';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Share, Alert, StyleSheet } from 'react-native';
+import { View, Text, Share, Alert } from 'react-native';
 import MainLayout from '../layouts/MainLayout';
 import Button from '../components/Button';
 import {
@@ -15,7 +16,14 @@ import { formatProof } from '../lib';
 import { Circuit } from '../types';
 import { getGNSSCoordinates } from '../gnss'; 
 import { PermissionsAndroid } from 'react-native';
-
+import { clsx } from 'clsx';
+import LinearGradient from 'react-native-linear-gradient';
+import GradientText from '../components/GradientText';
+import { TextBold } from '../components/TextBold'
+import { Camera, useCameraDevice, useFrameProcessor } from 'react-native-vision-camera';
+import { useBarcodeScanner, CameraHighlights } from '@mgcrea/vision-camera-barcode-scanner';
+import { runOnJS } from 'react-native-reanimated';
+import type { Barcode } from '@mgcrea/vision-camera-barcode-scanner';
 
 export default function BoundingProof() {
   const [proof, setProof] = useState('');
@@ -25,6 +33,35 @@ export default function BoundingProof() {
   const [generatingProof, setGeneratingProof] = useState(false);
   const [verifyingProof, setVerifyingProof] = useState(false);
   const [provingTime, setProvingTime] = useState(0);
+  const [showScanner, setShowScanner] = useState(false);
+  const [barcodes, setBarcodes] = useState<Barcode[]>([]);
+  const device = useCameraDevice('back');
+  const { props: cameraProps, highlights } = useBarcodeScanner({
+  fps: 5,
+  barcodeTypes: ['qr'],
+  onBarcodeScanned: (barcodes) => {
+    if (barcodes.length > 0) {
+      const data = barcodes[0].rawValue;
+      if (data) {
+        Alert.alert('QR Scanned', data);
+        setShowScanner(false);
+      }
+    }
+  },
+});
+
+
+
+  useEffect(() => {
+    if (barcodes.length > 0) {
+      const data = barcodes[0].rawValue;
+      if (data) {
+        Alert.alert('QR Scanned', data);
+        setShowScanner(false);
+      }
+    }
+  }, [barcodes]);
+
 
   useEffect(() => {
     const setup = async () => {
@@ -170,56 +207,66 @@ export default function BoundingProof() {
 
   return (
     <MainLayout canGoBack={true}>
-      <Text style={styles.sectionTitle}>Location Proof</Text>
+       <LinearGradient
+          colors={['#f8f7ff', '#ede4ff', '#e0d9ff']}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          className="flex-1 px-6 py-10 justify-start"
+        >
+      <View className="items-center mt-12 mb-6">
+        <View className="flex-row items-center gap-3 mb-4">
+          <GradientText>zkDrop</GradientText>
+        </View>
+      </View>
 
-      <Button disabled={generatingProof || !circuitId} onPress={onGenerateProof}>
-        <Text style={{ color: 'white', fontWeight: '700' }}>
-          {generatingProof ? 'Generating...' : 'Generate Proof'}
-        </Text>
-      </Button>
+ 
 
-      {proof && (
-        <>
-          <Text style={styles.sectionTitle}>Proof</Text>
-          <Text style={styles.proof}>{formatProof(proof)}</Text>
-
-          <Text style={styles.sectionTitle}>Proving time</Text>
-          <Text style={styles.proof}>{provingTime} ms</Text>
-
-          <Button disabled={verifyingProof} onPress={onVerifyProof}>
-            <Text style={{ color: 'white', fontWeight: '700' }}>
-              {verifyingProof ? 'Verifying...' : 'Verify Proof'}
-            </Text>
-          </Button>
-
+      {!proof ?
+      (
+        <Button
+          disabled={generatingProof || !circuitId || !!proof}
+          onPress={onGenerateProof}
+          className={clsx(
+            'w-full  border-2 border-[#c1ff72] rounded-xl py-3 mb-4',
+            generatingProof || !circuitId
+              ? 'bg-gray-400'
+              : 'bg-white'
+          )}
+        >
+          <Text className="text-[#453978] font-extrabold text-center">
+            {proof ? 'Generated' : generatingProof ? 'Generating...' : circuitId ? 'Generate Location Proof' : 'Loading...'}
+          </Text>
+        </Button>
+      )
+      :
+      (
+        <View className="items-center">
+          <Text className="text-center text-xl text-[#453978] mb-4">
+            <TextBold>Proof generated</TextBold>
+          </Text>
           <Button
-            theme="secondary"
-            onPress={() =>
-              Share.share({ title: 'Bounding Box Proof', message: proof })
-            }
+            onPress={() => setShowScanner(true)}
+            className="w-full border-2 border-[#c1ff72] rounded-xl py-3 mb-4 bg-white"
           >
-            <Text style={{ color: '#151628', fontWeight: '700' }}>
+            <Text className="text-[#453978] font-extrabold text-center">
               Share my proof
             </Text>
           </Button>
-        </>
+
+           {showScanner && device && (
+              <View className="w-full h-96 rounded-xl overflow-hidden border border-[#453978] mb-4">
+                <Camera
+                  style={{ flex: 1 }}
+                  device={device}
+                  isActive={true}
+                  {...cameraProps}
+                />
+                <CameraHighlights highlights={highlights} color="#453978" />
+              </View>
+            )}
+        </View>
       )}
+      </LinearGradient>
     </MainLayout>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionTitle: {
-    textAlign: 'center',
-    fontWeight: '700',
-    color: '#151628',
-    fontSize: 16,
-    marginVertical: 10,
-  },
-  proof: {
-    marginTop: 10,
-    color: '#666',
-    textAlign: 'center',
-    fontSize: 12,
-  },
-});

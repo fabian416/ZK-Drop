@@ -6,9 +6,9 @@ import Home from './pages/home';
 import {NavigationContainer} from '@react-navigation/native';
 import BoundingProof from './pages/bounding-proof';
 import "./global.css"
+import type { RootStackParamList } from './types/navigation';
 
-
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App(): React.JSX.Element {
   return (

@@ -4,13 +4,15 @@ import { Text, View, Alert } from 'react-native';
 import MainLayout from '../layouts/MainLayout';
 import Button from '../components/Button';
 import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../types/navigation';
 import { prepareSrs } from '../lib/noir';
 import { TextBold } from '../components/TextBold'
 import GradientText from '../components/GradientText';
 import LinearGradient from 'react-native-linear-gradient'
 
 export default function Home() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   useEffect(() => {
     const initializeSrs = async () => {
@@ -27,12 +29,9 @@ export default function Home() {
     initializeSrs();
   }, []);
 
-  const handleSimpleProof = () => navigation.navigate('SimpleProof');
-  const handlePoseidonProof = () => navigation.navigate('PoseidonProof');
   const handleBoundingProof = () => navigation.navigate('BoundingProof');
 
   return (
-
     <MainLayout>
       <LinearGradient
         colors={['#f8f7ff', '#ede4ff', '#e0d9ff']}
@@ -52,11 +51,11 @@ export default function Home() {
             <TextBold>Privacy</TextBold> is protected using <TextBold>zero-knowledge proofs</TextBold> powered by <TextBold>Noir</TextBold>.
           </Text>
         </View>
-        
+
         <View className="w-full max-w-md mx-auto my-2">
           <Button className="bg-white border-2 border-[#c1ff72] rounded-xl py-3">
             <Text className="text-center text-[#453978] font-extrabold" onPress={handleBoundingProof}>
-              Run Location Proof
+              Prove Location Now
             </Text>
           </Button>
         </View>
