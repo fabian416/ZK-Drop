@@ -13,8 +13,6 @@ import { ZKDropClaimButton } from "@/components/ZKDropClaimButton"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
 import BackToDashboardButton from "@/components/ZKBackToDashboardButton"
-import { ethers } from 'ethers';
-import { bytesToHex } from 'viem';
 
 
 export default function NFTClaimPage() {
@@ -166,7 +164,7 @@ export default function NFTClaimPage() {
                   label="claiming"
                 />
               ) : showQr ? (
-                qrData && <ZKDropQRCode qrData={qrData} onSubmit={() => handleSubmitProof({ proof: "mock-proof-data" })} />
+                <ZKDropQRCode />
               ) : (
                 <ZKDropTxButton
                   onClick={handleSendTransaction}

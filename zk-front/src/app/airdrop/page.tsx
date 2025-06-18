@@ -12,7 +12,6 @@ import { ZKPassportStep } from "@/components/ZKPassportStep"
 import { ZKDropClaimButton } from "@/components/ZKDropClaimButton"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
-import Link from "next/link"
 import BackToDashboardButton from "@/components/ZKBackToDashboardButton"
 
 export default function Airdrop() {
@@ -149,7 +148,7 @@ export default function Airdrop() {
                   label="claiming"
                 />
               ) : showQr ? (
-                qrData && <ZKDropQRCode qrData={qrData} onSubmit={() => handleSubmitProof({ proof: "mock-proof-data" })} />
+                <ZKDropQRCode />
               ) : (
                 <ZKDropTxButton
                   onClick={handleSendTransaction}

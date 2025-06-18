@@ -153,7 +153,7 @@ export default function Presale() {
                   {isPurchasing ? "Processing..." : identity ? "Generate Proof" : "Verify Identity before purchasing"}
                 </button>
               ) : showQr ? (
-                qrData && <ZKDropQRCode qrData={qrData} onSubmit={() => handleSubmitProof({ proof: "mock-proof-data" })} />
+                <ZKDropQRCode />
               ) : (
                 <ZKDropTxButton
                   onClick={handleSendTransaction}

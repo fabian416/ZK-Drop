@@ -1,7 +1,23 @@
 import QRCode from "react-qr-code"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-export function ZKDropQRCode({ qrData, onSubmit }: { qrData: string; onSubmit: () => void }) {
+export function ZKDropQRCode() {
+  const [qrData, setQrData] = useState("");
+
+  const backendUrl = "http://localhost:5000";
+
+  const getQrData = async () => {
+    const response = await axios.get(`${backendUrl}/relay-session`);
+    const data = response.data;
+    console.log(data);
+    setQrData(`${backendUrl}/relay-session/${data}`);
+  }
+  
+  useEffect(() => {
+    getQrData();
+  }, []);
+
   return (
     <div className="text-center">
       <p className="text-sm text-gray-600 mb-4">
@@ -10,12 +26,6 @@ export function ZKDropQRCode({ qrData, onSubmit }: { qrData: string; onSubmit: (
       <div className="inline-block p-4 bg-white rounded-lg border shadow">
         <QRCode value={qrData} size={200} />
       </div>
-      <Button
-        onClick={onSubmit}
-        className="w-full bg-[#453978] hover:bg-[#453978]/90 text-white cursor-pointer mt-2"
-      >
-        Use zk Proof
-      </Button>
     </div>
   )
 }
