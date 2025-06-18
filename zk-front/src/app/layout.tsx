@@ -5,7 +5,7 @@ import Header from "@/components/Header"
 import { headers } from "next/headers"
 
 export const metadata: Metadata = {
-  title: "ZK Drop",
+  title: "zkDrop",
   description: "Private airdrops and tokens by region",
   icons: {
     icon: "/favicon.ico",

@@ -29,13 +29,13 @@ export default function Home() {
 
   const handleSimpleProof = () => navigation.navigate('SimpleProof');
   const handlePoseidonProof = () => navigation.navigate('PoseidonProof');
-  const hanldeBoundingProof = () => navigation.navigate('BoundingProof');
+  const handleBoundingProof = () => navigation.navigate('BoundingProof');
 
   return (
 
     <MainLayout>
       <LinearGradient
-        colors={['#4c1d95', '#6b21a8', '#000000']}
+        colors={['#f8f7ff', '#ede4ff', '#e0d9ff']}
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
         className="flex-1 px-6 py-10 justify-center"
@@ -45,35 +45,22 @@ export default function Home() {
           <View className="flex-row items-center gap-3 mb-4">
             <GradientText>zkDrop</GradientText>
           </View>
-          <Text className="text-center text-base text-gray-300 mt-4">
-            Use Noir to generate <TextBold>zk proofs</TextBold> in Android with React Native.
+          <Text className="text-center text-base text-[#453978] mt-4">
+            Prove your location to <TextBold>unlock regional opportunities</TextBold> without revealing your exact coordinates.
           </Text>
-          <Text className="text-center text-base text-gray-300 mt-4">
-            <TextBold>Click on the button below</TextBold> to try out the Simple and Poseidon proofs.
+          <Text className="text-center text-base text-[#453978] mt-4">
+            <TextBold>Privacy</TextBold> is protected using <TextBold>zero-knowledge proofs</TextBold> powered by <TextBold>Noir</TextBold>.
           </Text>
         </View>
-
+        
         <View className="w-full max-w-md mx-auto my-2">
-           <Button onPress={handleSimpleProof}>
-            <Text style={{ color: 'white', fontWeight: '700' }}>
-              Run Simple Proof
-            </Text>
-          </Button>
-        </View>
-        <View className="w-full max-w-md mx-auto my-2">
-          <Button onPress={handlePoseidonProof}>
-            <Text style={{ color: 'white', fontWeight: '700' }}>
-              Run Poseidon Proof
-            </Text>
-          </Button>
-        </View>
-        <View className="w-full max-w-md mx-auto my-2">
-          <Button onPress={hanldeBoundingProof}>
-            <Text style={{ color: 'white', fontWeight: '700' }}>
+          <Button className="bg-white border-2 border-[#c1ff72] rounded-xl py-3">
+            <Text className="text-center text-[#453978] font-extrabold" onPress={handleBoundingProof}>
               Run Location Proof
             </Text>
           </Button>
         </View>
+
 
       </LinearGradient>
     </MainLayout>

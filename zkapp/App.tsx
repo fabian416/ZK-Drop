@@ -4,8 +4,6 @@ import React from 'react';
 import {TamaguiProvider} from 'tamagui';
 import Home from './pages/home';
 import {NavigationContainer} from '@react-navigation/native';
-import SimpleProof from './pages/simple-proof';
-import PoseidonProof from './pages/poseidon-proof';
 import BoundingProof from './pages/bounding-proof';
 import "./global.css"
 
@@ -22,8 +20,6 @@ function App(): React.JSX.Element {
             headerShown: false,
           }}>
           <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="SimpleProof" component={SimpleProof} />
-          <Stack.Screen name="PoseidonProof" component={PoseidonProof} />
           <Stack.Screen name="BoundingProof" component={BoundingProof} />
         </Stack.Navigator>
       </NavigationContainer>
