@@ -1,6 +1,7 @@
 "use client"
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 interface RelaySessionContextType {
   status: string | null;
@@ -26,6 +27,7 @@ export function RelaySessionProvider({ children }: { children: ReactNode }) {
         console.log("qrId", qrId);
         const response = await axios.get(`${backendUrl}/relay-session/status/${qrId}`);
         console.log("response", response);
+        console.log("response.data", response.data);
         setStatus(response.data);
         setError(null);
     } catch (err) {
@@ -33,6 +35,12 @@ export function RelaySessionProvider({ children }: { children: ReactNode }) {
         console.error('Error fetching status:', err);
     }
   };
+
+  useEffect(() => {
+    if (status) {
+      toast.success("Proof generated successfully");
+    }
+  }, [status]);
 
   useEffect(() => {
     let pollInterval: NodeJS.Timeout | null = null;

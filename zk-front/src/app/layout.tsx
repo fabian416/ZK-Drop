@@ -4,6 +4,7 @@ import ContextProvider from "@/context"
 import Header from "@/components/Header"
 import { headers } from "next/headers"
 import { RelaySessionProvider } from "@/contexts/RelaySessionContext"
+import { Toaster } from "@/components/ui/sonner"
 
 export const metadata: Metadata = {
   title: "zkDrop",
@@ -29,6 +30,7 @@ export default async function RootLayout({
           <RelaySessionProvider>
             <Header /> 
             {children}
+            <Toaster richColors position="top-right" duration={2000} />
           </RelaySessionProvider>
         </ContextProvider>
       </body>
