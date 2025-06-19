@@ -13,12 +13,11 @@ import { ZKDropClaimButton } from "@/components/ZKDropClaimButton"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
 import BackToDashboardButton from "@/components/ZKBackToDashboardButton"
-
+import useCoordinates from "@/hooks/useCoordinates"
 
 export default function NFTClaimPage() {
   const [isClaiming, setIsClaiming] = useState(false)
   const [isClaimed, setIsClaimed] = useState(false)
-  const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
@@ -26,7 +25,8 @@ export default function NFTClaimPage() {
   const [inputs, setInputs] = useState<any>(null)
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract()
-
+  const { status, status: relaySessionStatus } = useCoordinates();
+  
   const nftData = {
     nftName: "ZK Avatar",
     description: "Exclusive identity-bound NFT",
@@ -38,6 +38,10 @@ export default function NFTClaimPage() {
 
 
   const handleClaim = async () => {
+    if (!status) {
+      setShowQr(true);
+      return;
+    }
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) =>
         navigator.geolocation.getCurrentPosition(resolve, reject)
@@ -66,19 +70,18 @@ export default function NFTClaimPage() {
       console.log("✅ Backend proof:", proof.proof);
       console.log("✅ Backend inputs:", inp);
   
-      setQrData(JSON.stringify(publicInputs))
-      setShowQr(true)
     } catch (err) {
       console.error("Error generating proof or inputs:", err)
       alert("Could not generate ZK inputs or proof.")
     }
   }
 
-  const handleSubmitProof = async (receivedProof: unknown) => {
-    setShowQr(false);
-  }
-
   const handleSendTransaction = async () => {
+    if (!status) {
+      setShowQr(true);
+      return;
+    }
+    
     if (!proof) return alert("No proof available to submit.")
 
       const loadFromPublic = async () => {
@@ -163,7 +166,7 @@ export default function NFTClaimPage() {
                   onClaim={handleClaim}
                   label="claiming"
                 />
-              ) : showQr ? (
+              ) : showQr && !status ? (
                 <ZKDropQRCode />
               ) : (
                 <ZKDropTxButton
