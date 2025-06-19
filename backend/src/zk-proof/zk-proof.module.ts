@@ -4,6 +4,7 @@ import { ZkProofController } from './zk-proof.controller';
 
 @Module({
   providers: [ZkProofService],
-  controllers: [ZkProofController]
+  controllers: [ZkProofController],
+  exports: [ZkProofService],
 })
 export class ZkProofModule {}
