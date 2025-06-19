@@ -13,18 +13,20 @@ import { ZKDropQRCode } from "@/components/ZKDropQRCode"
 import { ZKPassportStep } from "@/components/ZKPassportStep"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
+import useCoordinates from "@/hooks/useCoordinates"
+import { ZKDropClaimButton } from "@/components/ZKDropClaimButton"
 
 export default function Presale() {
   const [amount, setAmount] = useState("")
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [isPurchased, setIsPurchased] = useState(false)
-  const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
   const [proof, setProof] = useState<unknown>(null)
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract()
+  const { status, status: relaySessionStatus } = useCoordinates();
 
   const presaleData = {
     tokenName: "ZKL",
@@ -35,11 +37,8 @@ export default function Presale() {
   }
 
   const handlePurchase = async () => {
-    if (!identity) return setShowIdentity(true)
-
     try {
       const publicInputs = await getPublicInputsForUSA()
-      setQrData(JSON.stringify(publicInputs))
       setShowQr(true)
     } catch (err) {
       console.error("Failed to generate public inputs:", err)
@@ -47,13 +46,11 @@ export default function Presale() {
     }
   }
 
-  const handleSubmitProof = async (receivedProof: unknown) => {
-    setProof(receivedProof)
-    setShowQr(false)
-  }
-
   const handleSendTransaction = async () => {
-    if (!proof) return alert("No proof available to submit.")
+    if (!status) {
+      setShowQr(true);
+      return;
+    }
 
     setIsPurchasing(true)
     try {
@@ -143,16 +140,14 @@ export default function Presale() {
               </ZKDropInfoBlocks>
 
               {!showQr && !proof ? (
-                <button
-                  onClick={handlePurchase}
-                  disabled={isPurchasing || !isAmountValid}
-                  className={`w-full py-2 rounded-lg text-white ${
-                    isPurchasing || !isAmountValid ? "bg-[#453978]/50 cursor-not-allowed" : "bg-[#453978] hover:bg-[#453978]/90"
-                  }`}
-                >
-                  {isPurchasing ? "Processing..." : identity ? "Generate Proof" : "Verify Identity before purchasing"}
-                </button>
-              ) : showQr ? (
+                <ZKDropClaimButton
+                  identity={identity}
+                  isProcessing={isPurchasing}
+                  onVerify={() => setShowIdentity(true)}
+                  onClaim={handlePurchase}
+                  label="claiming"
+                />
+              ) : showQr && !status ? (
                 <ZKDropQRCode />
               ) : (
                 <ZKDropTxButton

@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import ContextProvider from "@/context"
 import Header from "@/components/Header"
 import { headers } from "next/headers"
+import { RelaySessionProvider } from "@/contexts/RelaySessionContext"
 
 export const metadata: Metadata = {
   title: "zkDrop",
@@ -25,8 +26,10 @@ export default async function RootLayout({
     <html lang="en">
       <body className="bg-[#f8f7ff]">
         <ContextProvider cookies={cookies}>
-          <Header /> 
-          {children}
+          <RelaySessionProvider>
+            <Header /> 
+            {children}
+          </RelaySessionProvider>
         </ContextProvider>
       </body>
     </html>

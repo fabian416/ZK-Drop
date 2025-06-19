@@ -13,17 +13,18 @@ import { ZKDropClaimButton } from "@/components/ZKDropClaimButton"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
 import BackToDashboardButton from "@/components/ZKBackToDashboardButton"
+import useCoordinates from "@/hooks/useCoordinates"
 
 export default function Airdrop() {
   const [isClaiming, setIsClaiming] = useState(false)
   const [isClaimed, setIsClaimed] = useState(false)
-  const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
   const [proof, setProof] = useState<unknown>(null)
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract()
+  const { status } = useCoordinates();
 
   const airdropData = {
     tokenName: "NRH",
@@ -35,6 +36,11 @@ export default function Airdrop() {
   }
 
   const handleClaim = async () => {
+    if (!status) {
+      setShowQr(true);
+      return;
+    }
+
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) =>
         navigator.geolocation.getCurrentPosition(resolve, reject)
@@ -60,23 +66,13 @@ export default function Airdrop() {
   
       console.log("✅ Backend proof:", proof);
       console.log("✅ Backend inputs:", inputs);
-  
-      setQrData(JSON.stringify(publicInputs))
-      setShowQr(true)
     } catch (err) {
       console.error("Error generating proof or inputs:", err)
       alert("Could not generate ZK inputs or proof.")
     }
   }
-  
-
-  const handleSubmitProof = async (receivedProof: unknown) => {
-    setProof(receivedProof)
-    setShowQr(false)
-  }
 
   const handleSendTransaction = async () => {
-    if (!proof) return alert("No proof available to submit.")
 
     setIsClaiming(true)
     try {
@@ -147,12 +143,12 @@ export default function Airdrop() {
                   onVerify={() => setShowIdentity(true)}
                   onClaim={handleClaim}
                   label="claiming"
-                  />
+                />
+              ) : showQr && !status ? (
                 <ZKDropQRCode />
                   </>
               ) : showQr ? (
-                                <ZKDropQRCode />
-
+                  <ZKDropQRCode />
               ) : (
                 <ZKDropTxButton
                   onClick={handleSendTransaction}
