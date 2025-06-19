@@ -140,15 +140,19 @@ export default function Airdrop() {
               </ZKDropInfoBlocks>
 
               {!showQr && !proof ? (
+                <>
                 <ZKDropClaimButton
                   identity={identity}
                   isProcessing={isClaiming}
                   onVerify={() => setShowIdentity(true)}
                   onClaim={handleClaim}
                   label="claiming"
-                />
-              ) : showQr ? (
+                  />
                 <ZKDropQRCode />
+                  </>
+              ) : showQr ? (
+                                <ZKDropQRCode />
+
               ) : (
                 <ZKDropTxButton
                   onClick={handleSendTransaction}
