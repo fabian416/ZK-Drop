@@ -148,9 +148,9 @@ export default function BoundingProof() {
     const maxLat = "0x347d454";
     const minLon = "0x598e7c";
     const maxLon = "0xe56ca4";
-    const regionHash = "0xa84bbbb7e92739e37dfe00ec56b943c3b15c58aaeaf91ed5c348083f7e74987";
+    const regionHash = "0x2deaeb85a25ed7942de2e93760f232514ecd88f5d80230860fafcab8f2c7dbd8";
     const challenge = "0x3039"; // 12345
-    const nullifier = "0x2804ef4ee0db656a2b181393074541fef5777c16f03fa6aa88f181c0cc94d126";
+    const nullifier = "0x2a437cc092b606f3af2cdb45addec9a10270e2d24eed458a3a9256534fd98b8b";
   
     console.log("Generating proof with inputs:", {
       latHex,
