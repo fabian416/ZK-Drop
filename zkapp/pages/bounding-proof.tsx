@@ -128,10 +128,10 @@ export default function BoundingProof() {
     const latHex = `0x${lat.toString(16)}`;
     const lonHex = `0x${adjustedLon.toString(16)}`;
 
-    const minLat = "0x1744214";
-    const maxLat = "0x2f18ba6";
-    const minLon = "0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593e88ef4b3";
-    const maxLon = "0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593ec02a8cf";
+    const minLat = "0x2d1d6a4";
+    const maxLat = "0x347d454";
+    const minLon = "0x598e7c";
+    const maxLon = "0xe56ca4";
     const regionHash = "0xa84bbbb7e92739e37dfe00ec56b943c3b15c58aaeaf91ed5c348083f7e74987";
     const challenge = "0x3039"; // 12345
     const nullifier = "0x2804ef4ee0db656a2b181393074541fef5777c16f03fa6aa88f181c0cc94d126";
