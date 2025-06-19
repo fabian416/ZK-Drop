@@ -13,18 +13,19 @@ import { ZKDropQRCode } from "@/components/ZKDropQRCode"
 import { ZKPassportStep } from "@/components/ZKPassportStep"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
+import useCoordinates from "@/hooks/useCoordinates"
 
 export default function Presale() {
   const [amount, setAmount] = useState("")
   const [isPurchasing, setIsPurchasing] = useState(false)
   const [isPurchased, setIsPurchased] = useState(false)
-  const [qrData, setQrData] = useState<string | null>(null)
   const [showQr, setShowQr] = useState(false)
   const [showIdentity, setShowIdentity] = useState(false)
   const [identity, setIdentity] = useState(false)
   const [proof, setProof] = useState<unknown>(null)
 
   const { writeContract, data, isPending, isSuccess, isError, error } = useWriteContract()
+  const { status, status: relaySessionStatus } = useCoordinates();
 
   const presaleData = {
     tokenName: "ZKL",
@@ -35,25 +36,19 @@ export default function Presale() {
   }
 
   const handlePurchase = async () => {
-    if (!identity) return setShowIdentity(true)
-
     try {
       const publicInputs = await getPublicInputsForUSA()
-      setQrData(JSON.stringify(publicInputs))
-      setShowQr(true)
     } catch (err) {
       console.error("Failed to generate public inputs:", err)
       alert("Failed to generate ZK inputs.")
     }
   }
 
-  const handleSubmitProof = async (receivedProof: unknown) => {
-    setProof(receivedProof)
-    setShowQr(false)
-  }
-
   const handleSendTransaction = async () => {
-    if (!proof) return alert("No proof available to submit.")
+    if (!status) {
+      setShowQr(true);
+      return;
+    }
 
     setIsPurchasing(true)
     try {
@@ -152,7 +147,7 @@ export default function Presale() {
                 >
                   {isPurchasing ? "Processing..." : identity ? "Generate Proof" : "Verify Identity before purchasing"}
                 </button>
-              ) : showQr ? (
+              ) : showQr && !status ? (
                 <ZKDropQRCode />
               ) : (
                 <ZKDropTxButton

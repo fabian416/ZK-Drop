@@ -35,8 +35,6 @@ export default function NFTClaimPage() {
     region: "North America"
   }
 
-
-
   const handleClaim = async () => {
     if (!status) {
       setShowQr(true);
