@@ -82,7 +82,23 @@ export default function BoundingProof() {
         Alert.alert('Permission denied', 'Cannot continue without location access.');
         return;
       }
-  
+
+      const cameraPermission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Camera Permission',
+          message: 'This app requires access to your camera to scan documents.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+      
+      if (cameraPermission !== PermissionsAndroid.RESULTS.GRANTED) {
+        Alert.alert('Permission denied', 'Cannot continue without camera access.');
+        return;
+      }
+
       // Step 2: Set up the circuit and store its ID
       const id = await setupCircuit(circuit as Circuit);
       setCircuitId(id);
