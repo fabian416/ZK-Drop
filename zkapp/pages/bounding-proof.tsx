@@ -1,4 +1,3 @@
-import 'react-native-reanimated';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Share, Alert } from 'react-native';
 import MainLayout from '../layouts/MainLayout';
@@ -36,21 +35,25 @@ export default function BoundingProof() {
   const [showScanner, setShowScanner] = useState(false);
   const [barcodes, setBarcodes] = useState<Barcode[]>([]);
   const device = useCameraDevice('back');
+
+  const onBarcodeScanned = (barcodes: Barcode[]) => {
+    'worklet';
+
+    if (barcodes.length > 0) {
+      const data = barcodes[0].rawValue;
+      if (data) {
+        runOnJS(Alert.alert)('QR Scanned', data);
+        runOnJS(postProofToBackend)(data, 'proof');
+        runOnJS(setShowScanner)(false);
+      }
+    }
+  };
+
   const { props: cameraProps, highlights } = useBarcodeScanner({
     fps: 5,
     barcodeTypes: ['qr'],
-    onBarcodeScanned: (barcodes) => {
-    if (barcodes.length > 0) {
-        const data = barcodes[0].rawValue;
-        if (data) {
-          runOnJS(Alert.alert)('QR Scanned', data);
-          runOnJS(postProofToBackend)(data, "proof");
-          runOnJS(setShowScanner)(false);
-        }
-      }
-    }
+    onBarcodeScanned,
   });
-
 
 
   useEffect(() => {
