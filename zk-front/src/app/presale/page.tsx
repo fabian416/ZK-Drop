@@ -14,6 +14,7 @@ import { ZKPassportStep } from "@/components/ZKPassportStep"
 import { ZKDropTxButton } from "@/components/ZKDropTxButton"
 import { ZKDropSuccess } from "@/components/ZKDropSuccess"
 import useCoordinates from "@/hooks/useCoordinates"
+import { ZKDropClaimButton } from "@/components/ZKDropClaimButton"
 
 export default function Presale() {
   const [amount, setAmount] = useState("")
@@ -38,6 +39,7 @@ export default function Presale() {
   const handlePurchase = async () => {
     try {
       const publicInputs = await getPublicInputsForUSA()
+      setShowQr(true)
     } catch (err) {
       console.error("Failed to generate public inputs:", err)
       alert("Failed to generate ZK inputs.")
@@ -138,15 +140,13 @@ export default function Presale() {
               </ZKDropInfoBlocks>
 
               {!showQr && !proof ? (
-                <button
-                  onClick={handlePurchase}
-                  disabled={isPurchasing || !isAmountValid}
-                  className={`w-full py-2 rounded-lg text-white ${
-                    isPurchasing || !isAmountValid ? "bg-[#453978]/50 cursor-not-allowed" : "bg-[#453978] hover:bg-[#453978]/90"
-                  }`}
-                >
-                  {isPurchasing ? "Processing..." : identity ? "Generate Proof" : "Verify Identity before purchasing"}
-                </button>
+                <ZKDropClaimButton
+                  identity={identity}
+                  isProcessing={isPurchasing}
+                  onVerify={() => setShowIdentity(true)}
+                  onClaim={handlePurchase}
+                  label="claiming"
+                />
               ) : showQr && !status ? (
                 <ZKDropQRCode />
               ) : (
